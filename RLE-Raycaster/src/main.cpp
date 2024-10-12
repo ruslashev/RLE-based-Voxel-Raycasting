@@ -11,7 +11,7 @@
 #  include <windows.h>
 #pragma warning(disable:4996)
 #endif
-#include "../src.BestFitMem/bmalloc.h"
+// #include "../src.BestFitMem/bmalloc.h"
 ////////////////////////////////////////////////////////////////////////////////
 // includes, system
 #include <stdlib.h>
@@ -30,12 +30,12 @@ float global_z;
 void CUT_CHECK_ERROR_GL(){};
 #endif
 ////////////////////////////////////////////////////////////////////////////////
-#include "RLE4.h"
+#include "Rle4.h"
 #include "RayMap.h"
-#include "Tree.h"
+#include "tree.h"
 #include "GL_Main.h"
 #include "DrawUtils.h"
-#include "../src.BestFitMem/bmalloc.h"
+// #include "../src.BestFitMem/bmalloc.h"
 ////////////////////////////////////////////////////////////////////////////////
 //extern "C" RayMap_GPU ray_map_GPU;
 ////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ static  int cuda_time = 0;
 ////////////////////////////////////////////////////////////////////////////////
 int main( int argc, char** argv) {
 
-	timeBeginPeriod(1); 
+	// timeBeginPeriod(1); 
 
 	int pool_size=100*1024*1024;
 	char* pool     = (char*)(((uint)malloc(pool_size+16)+16)&0xfffffff0);
@@ -64,7 +64,7 @@ int main( int argc, char** argv) {
 	cpu_to_gpu_delta=((int)pool_gpu - (int)pool)&0xfffffff0;
 
 	memset  (pool , 0,pool_size);
-	add_pool(pool ,   pool_size);
+	// add_pool(pool ,   pool_size);
 	printf("pool:%d\n",(int)pool);
 	//realloc(pool,1*1024*1024);
 	//free(pool);
@@ -124,7 +124,7 @@ if(1)
 #ifdef BUDDHA
 //	if (!rle4.load("../san-miguel.rle4")) return 0;
 //	if (!rle4.load("../bunny.rle4")) return 0;
-	if (!rle4.load("../../Imrodh.rle4")) return 0;
+	if (!rle4.load("Imrodh.rle4")) return 0;
 //	if (!rle4.load("../../xyzrgbdragon.rle4")) return 0;
 //	san-miguel
 //	if (!rle4.load("../../san-miguel.rle4")) return 0;
@@ -389,8 +389,9 @@ void update_viewpoint()
 {
 	//int a;loop ( a,0,128 ) if ( keyboard.KeyDn(a) ) printf("\nk:%d\n",a);
 
-	static int time1=0,time2=timeGetTime(),delta=0; 
-	time1 = time2; time2 = timeGetTime(); delta=time2-time1;
+	// static int time1=0,time2=timeGetTime(),delta=0; 
+	// time1 = time2; time2 = timeGetTime(); delta=time2-time1;
+	int delta = 16;
 
 	static float multiplier = 0.125f;
 	float step = float(delta) * multiplier;
@@ -437,7 +438,7 @@ void update_viewpoint()
 
 	////////////////////// Some light
 
-	static unsigned int starttime=timeGetTime();
+	// static unsigned int starttime=timeGetTime();
 	//lightx = sin( float(timeGetTime()-starttime)/500 )*1000;
 	//lighty = 1000;
 	//lightz = cos( float(timeGetTime()-starttime)/500 )*1000;
@@ -451,7 +452,7 @@ void render_to_pbo()
 	static int render_width  = RENDER_SIZE;
 	static int render_height = RENDER_SIZE;
 
-	unsigned int t1 = timeGetTime();
+	// unsigned int t1 = timeGetTime();
 
 	if (pbo_dest == -2)
 	{
@@ -465,7 +466,7 @@ void render_to_pbo()
 	// run the Cuda kernel
 	cuda_main_render2( pbo_dest, render_width, render_height , &ray_map );
 
-	unsigned int t2 = timeGetTime();
+	// unsigned int t2 = timeGetTime();
 //	printf("all %d fps:%2.2f    \r",
 //		t2-t1,1000.0f/float(t2-t1));
 	printf("\r");
@@ -783,39 +784,39 @@ void compute_ray_map()
 void
 display() 
 {
-	int t1=timeGetTime();
+	// int t1=timeGetTime();
 	update_viewpoint();
 	compute_ray_map();
-	int t2=timeGetTime();
+	// int t2=timeGetTime();
 #ifndef DETAIL_BENCH
-	printf("raymap: %d  ",t2-t1);
+	// printf("raymap: %d  ",t2-t1);
 #endif
 
 	render_to_pbo();	// external CUDA call
 	glFlush();
 
-	int t3=timeGetTime();
+	// int t3=timeGetTime();
 
-	cuda_time = t3-t2;
+	// cuda_time = t3-t2;
 
-	printf("renA: %d  ",t3-t2);
+	// printf("renA: %d  ",t3-t2);
 
 	display_pbo();
 	display_ray_map();
 	glFlush();
 
-	int t4=timeGetTime();
+	// int t4=timeGetTime();
 
 #ifndef DETAIL_BENCH
-	printf("tex %d  ",t4-t3);
+	// printf("tex %d  ",t4-t3);
 #endif
 
 	static float msavg=1.0;
-	static int t_1=timeGetTime();
-	static int t_2;
-	t_2=t_1; t_1=timeGetTime();
+	// static int t_1=timeGetTime();
+	// static int t_2;
+	// t_2=t_1; t_1=timeGetTime();
 
-	msavg = ( msavg * 3 + float(t_1-t_2) ) / 4.0;
+	// msavg = ( msavg * 3 + float(t_1-t_2) ) / 4.0;
 
 	
 	beginRenderText( screen.window_width, screen.window_height);
@@ -827,7 +828,7 @@ display()
 		HCOL+=15;
         renderText( VCOL, HCOL, BITMAP_FONT_TYPE_HELVETICA_12, text );
 		
-		sprintf(text, "CUDA Time: %d msec", cuda_time);
+		// sprintf(text, "CUDA Time: %d msec", cuda_time);
 		HCOL+=15;
         renderText( VCOL, HCOL, BITMAP_FONT_TYPE_HELVETICA_12, text );
 		
@@ -851,25 +852,25 @@ display()
     endRenderText();
 	glFlush();
 
-	int t5=timeGetTime();
+	// int t5=timeGetTime();
 #ifndef DETAIL_BENCH
-	printf("txt %d  ",t5-t4);
+	// printf("txt %d  ",t5-t4);
 #endif
 
 	glutSwapBuffers();
 	glFlush();
 
-	int t6=timeGetTime();
+	// int t6=timeGetTime();
 #ifndef DETAIL_BENCH
-	printf("swp %d  ",t6-t5);
+	// printf("swp %d  ",t6-t5);
 #endif
 
 	mouse.update();
 	keyboard.update();
 
-	int t7=timeGetTime();
+	// int t7=timeGetTime();
 #ifndef DETAIL_BENCH
-	printf("keyb %d  ",t7-t6);
+	// printf("keyb %d  ",t7-t6);
 #endif
 }
 ////////////////////////////////////////////////////////////////////////////////

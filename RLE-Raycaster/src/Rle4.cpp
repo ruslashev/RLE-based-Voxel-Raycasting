@@ -1,17 +1,17 @@
-#include <windows.h>
+// #include <windows.h>
 /*------------------------------------------------------*/
 #include "Rle4.h"
-#include "../src.BestFitMem/bmalloc.h"
+// #include "../src.BestFitMem/bmalloc.h"
 /*------------------------------------------------------*/
 #ifndef IN_CUDA_ENV
 #include <vector>
 #include "VecMath.h"
-#include "bmp.h"
+#include "Bmp.h"
 #else
 typedef float3 vec3f;
 typedef int3 vec3i;
 #endif
-#include "Tree.h"
+#include "tree.h"
 /*------------------------------------------------------*/
 void RLE4::compress_all(Tree& tree)
 {
@@ -226,7 +226,7 @@ void RLE4::save(char *filename)
 
 	fwrite(&nummaps,1,4,fn);
 
-	if(nummaps==0){MessageBoxA(0,"0 mipmaps","error",0);exit(0);}
+	if(nummaps==0){puts("0 mipmaps");exit(0);}
 
 	for (int m=0;m<nummaps;m++)
 	{
@@ -247,7 +247,7 @@ bool RLE4::load(char *filename)
 
 	if ((fn = fopen (filename,"rb")) == NULL)
 	{
-		MessageBox(0,filename,"File not found",0);
+		printf("File '%s' not found\n", filename);
 		return false;
 	}
 
@@ -263,7 +263,7 @@ bool RLE4::load(char *filename)
 
 	for (int m=0;m<nummaps;m++)
 	{
-		printf("MipVol %d ------------------------\n",m);
+		// printf("MipVol %d ------------------------\n",m);
 
 		fread(&map[m].sx,1,4,fn);
 		fread(&map[m].sy,1,4,fn);//map[m].sy=1024;
@@ -271,10 +271,10 @@ bool RLE4::load(char *filename)
 		fread(&map[m].slabs_size,1,4,fn);
 		filesize+=16;
 
-		printf("sx %d\n",map[m].sx);
-		printf("sy %d\n",map[m].sy);
-		printf("sz %d\n",map[m].sz);
-		printf("slabs_size %d\n",map[m].slabs_size);
+		// printf("sx %d\n",map[m].sx);
+		// printf("sy %d\n",map[m].sy);
+		// printf("sz %d\n",map[m].sz);
+		// printf("slabs_size %d\n",map[m].slabs_size);
 
 		map[m].map = (uint*) malloc ( map[m].sx*map[m].sz*4*2 );
 		map[m].slabs = (ushort*)malloc ( map[m].slabs_size*2 );
@@ -318,23 +318,23 @@ bool RLE4::load(char *filename)
 
 		if (m==0) numtex_0 = numtex;
 
-		printf("Number of RLE Elements:%d\n",numrle);
-		printf("Number of Voxels:%d\n",numtex);
-		printf("Bits per Voxel:%2.2f (RLE)+ 16 (Color)\n",float(numrle*16)/float(numtex));
+		// printf("Number of RLE Elements:%d\n",numrle);
+		// printf("Number of Voxels:%d\n",numtex);
+		// printf("Bits per Voxel:%2.2f (RLE)+ 16 (Color)\n",float(numrle*16)/float(numtex));
 	}
 
 	int colorsize=total_numtex*2;
 	int possize=filesize-colorsize;
 
-	printf("Total data: %3.3f MB\n",float(filesize)/float(1024*1024));
-	printf("Position data: %3.3f MB\n",float(possize)/float(1024*1024));
-	printf("Color data: %3.3f MB\n",float(colorsize)/float(1024*1024));
-	printf("Total Bytes/voxel:%2.2f bytes\n",float(filesize)/float(numtex_0));
-	printf("Position Bytes/voxel:%2.2f bytes\n",float(possize)/float(numtex_0));
-	printf("Color Bytes/voxel:%2.2f\n\n",float(colorsize)/float(numtex_0));
-	printf("Total Number of RLE Elements:%d\n",total_numrle);
-	printf("Total Number of Voxels:%d\n",total_numtex);
-	printf("Total Bits per Voxel:%2.2f (RLE)+ %2.2f (Color)\n",float(total_numrle*16)/float(numtex_0),float(total_numtex*16)/float(numtex_0));
+	// printf("Total data: %3.3f MB\n",float(filesize)/float(1024*1024));
+	// printf("Position data: %3.3f MB\n",float(possize)/float(1024*1024));
+	// printf("Color data: %3.3f MB\n",float(colorsize)/float(1024*1024));
+	// printf("Total Bytes/voxel:%2.2f bytes\n",float(filesize)/float(numtex_0));
+	// printf("Position Bytes/voxel:%2.2f bytes\n",float(possize)/float(numtex_0));
+	// printf("Color Bytes/voxel:%2.2f\n\n",float(colorsize)/float(numtex_0));
+	// printf("Total Number of RLE Elements:%d\n",total_numrle);
+	// printf("Total Number of Voxels:%d\n",total_numtex);
+	// printf("Total Bits per Voxel:%2.2f (RLE)+ %2.2f (Color)\n",float(total_numrle*16)/float(numtex_0),float(total_numtex*16)/float(numtex_0));
 	
 
 	Map4 map4=map[0];
@@ -440,8 +440,8 @@ void RLE4::all_to_gpu()
 Map4 RLE4::copy_to_gpu(Map4 map4)
 {
 	Map4 map4gpu=map4;
-	map4gpu.map		= (uint*)((uint)(((char*)bmalloc(map4.sx*map4.sz*4*2+32))+cpu_to_gpu_delta+31) & 0xffffffe0 );
-	map4gpu.slabs	= (ushort*)	((uint)(((char*)bmalloc(map4.slabs_size*2+32))+cpu_to_gpu_delta+31)& 0xffffffe0 );
+	map4gpu.map		= (uint*)((uint)(((char*)malloc(map4.sx*map4.sz*4*2+32))+cpu_to_gpu_delta+31) & 0xffffffe0 );
+	map4gpu.slabs	= (ushort*)	((uint)(((char*)malloc(map4.slabs_size*2+32))+cpu_to_gpu_delta+31)& 0xffffffe0 );
 	gpu_memcpy((char*)map4gpu.map,(char*)map4.map,map4.sx*map4.sz*4*2);
 	gpu_memcpy((char*)map4gpu.slabs,(char*)map4.slabs,map4.slabs_size*2);
 	return map4gpu;

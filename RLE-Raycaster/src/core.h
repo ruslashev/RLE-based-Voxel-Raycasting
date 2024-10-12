@@ -58,19 +58,23 @@
 #define loops(a_l,start_l,end_l,step_l) for ( a_l = start_l;a_l<end_l;a_l+=step_l )
 
 #ifndef byte
-#define byte unsigned char
+/* #define byte unsigned char */
+typedef unsigned char byte;
 #endif
 
 #ifndef ushort
-#define ushort unsigned short
+/* #define ushort unsigned short */
+typedef unsigned short ushort;
 #endif
 
 #ifndef uint
-#define uint unsigned int
+/* #define uint unsigned int */
+typedef unsigned int uint;
 #endif
 
 #ifndef uchar
-#define uchar unsigned char
+/* #define uchar unsigned char */
+typedef unsigned char uchar;
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////

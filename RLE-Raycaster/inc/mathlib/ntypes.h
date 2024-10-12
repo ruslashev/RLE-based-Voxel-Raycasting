@@ -116,17 +116,17 @@ nMemoryStats n_dbgmemgetstats();    // defined in ndbgalloc.cc
 #undef new
 #endif
 
-#ifdef delete
-#undef delete
-#endif
+/* #ifdef delete */
+/* #undef delete */
+/* #endif */
 
 // implemented in ndbgalloc.cc
 void* operator new(size_t size);
 void* operator new(size_t size, const char* file, int line);
 void* operator new[](size_t size);
 void* operator new[](size_t size, const char* file, int line);
-void operator delete(void* p);
-void operator delete[](void* p);
+/* void operator delete(void* p); */
+/* void operator delete[](void* p); */
 void* n_malloc_dbg(size_t size, const char* file, int line);
 void* n_calloc_dbg(size_t num, size_t size, const char* file, int line);
 void* n_realloc_dbg(void* memblock, size_t size, const char* file, int line);

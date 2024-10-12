@@ -9,8 +9,8 @@ struct vec3i { int x,y,z;};
 #endif
 
 //#define __USE_SSE__
-#include "mathlib/Vector.h"
-#include "mathlib/Matrix.h"
+#include "mathlib/vector.h"
+#include "mathlib/matrix.h"
 
 struct vec3f
 {

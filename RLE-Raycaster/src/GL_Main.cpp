@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // includes, GL
 #include "GL_Main.h"
-#include <wglew.h>
+// #include <wglew.h>
 ////////////////////////////////////////////////////////////////////////////////
 extern "C" void pboRegister( int pbo );
 extern "C" void pboUnregister( int pbo );
@@ -45,7 +45,7 @@ void GL_Main::KeyPressed(int key, int x, int y,bool pressed)
     {
 	  exit(0);
     }
-    Sleep(10);
+    usleep(10 * 1000);
 
     keyboard.key[ key&255 ] = pressed;
 
@@ -98,7 +98,7 @@ void GL_Main::Init(int window_width, int window_height, bool fullscreen,void (*d
 		glutFullScreen() ;
 	}
 	glewInit();
-	wglSwapIntervalEXT(false);
+	// wglSwapIntervalEXT(false);
 
 	// default initialization
 	glClearColor( 0.5, 0.5, 0.5, 1.0);

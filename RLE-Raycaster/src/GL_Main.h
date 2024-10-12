@@ -2,8 +2,9 @@
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 #include "core.h"
-#include "bmp.h"
+#include "Bmp.h"
 #include "glsl.h"
+#include <unistd.h>
 ////////////////////////////////////////////////////////////////////////////////
 struct GL_Main
 {
@@ -58,7 +59,7 @@ struct GL_Main
 		{
 			printf("GL Error: %s\n",gluErrorString(err));
 			printf("Programm Stopped!\n");
-			while(1)Sleep(1000);;
+			while(1)usleep(1000 * 1000);;
 		}
 	}
 };
@@ -259,7 +260,7 @@ class FBO {
 				break;
 		};
 		printf("Programm Stopped!\n");
-		while(1)Sleep(100);;
+		while(1)usleep(100 * 1000);;
 	}
 };
 

@@ -18,7 +18,7 @@
 #include "RayMap.h"
 #include "Cuda_Render.h"
 #include "Rle4.h"
-#include "../src.BestFitMem/bmalloc.h"
+// #include "../src.BestFitMem/bmalloc.h"
 //#include "CudaMath.h"
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -182,15 +182,15 @@ cudaRender(
 ////////////////////////////////////////////////////////////////////////////////
 void cuda_main_render2( int pbo_out, int width, int height,RayMap_GPU* raymap)
 {
-	int t0 = timeGetTime();
+	// int t0 = timeGetTime();
 
 	if(pbo_out==0) return;
 
     static Render render;
-    static Render *render_gpu=(Render*) ((char*)bmalloc(sizeof(Render))+cpu_to_gpu_delta);
-    static ushort* skipmap_gpu=(ushort*)((char*)bmalloc(RAYS_CASTED*RENDER_SIZE*4)+cpu_to_gpu_delta);
+    static Render *render_gpu=(Render*) ((char*)malloc(sizeof(Render))+cpu_to_gpu_delta);
+    static ushort* skipmap_gpu=(ushort*)((char*)malloc(RAYS_CASTED*RENDER_SIZE*4)+cpu_to_gpu_delta);
     
-    if((int)render_gpu==cpu_to_gpu_delta){ printf("render_gpu 0 \n");while(1);;}
+    if((long)render_gpu==cpu_to_gpu_delta){ printf("render_gpu 0 \n");while(1);;}
     int lines_to_raycast = raymap->map_line_count;
     int thread_calls = ((raymap->map_line_count/2) | (THREAD_COUNT-1)) +1;
     if (lines_to_raycast>RAYS_CASTED ) lines_to_raycast=RAYS_CASTED;
@@ -217,7 +217,8 @@ void cuda_main_render2( int pbo_out, int width, int height,RayMap_GPU* raymap)
 	
 	gpu_memcpy(render_gpu, &render, sizeof(Render));
    
-	int t1 = timeGetTime();CUDA_SAFE_CALL( cudaThreadSynchronize() );
+	// int t1 = timeGetTime();
+	CUDA_SAFE_CALL( cudaThreadSynchronize() );
 
 	//printf("before\n");
 	//Sleep(10000);
@@ -239,7 +240,7 @@ void cuda_main_render2( int pbo_out, int width, int height,RayMap_GPU* raymap)
 	C_CHECK_GL_ERROR();
 
 	CUDA_SAFE_CALL( cudaThreadSynchronize() );
-	int t2 = timeGetTime();
+	// int t2 = timeGetTime();
 
 #ifdef DETAIL_BENCH
 	cpu_memcpy(&render.perf[0],&(render_gpu->perf[0]),  sizeof(Render::Perf)*RAYS_CASTED);

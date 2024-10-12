@@ -1,9 +1,9 @@
 ///////////////////////////////////////////
 #pragma once
 ///////////////////////////////////////////
-#include "Core.h"
+#include "core.h"
 #include "Rle4.h"
-#include "../src.BestFitMem/bmalloc.h"
+/* #include "../src.BestFitMem/bmalloc.h" */
 ///////////////////////////////////////////
 #ifndef IN_CUDA_ENV
 #include "VecMath.h"

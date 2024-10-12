@@ -7,6 +7,8 @@ License: BSD
 *********************************************************************/
 
 #include "glsl.h"
+#include <cstring>
+#include <unistd.h>
 //#include <Cg/cg.h>    /* Can't include this?  Is Cg Toolkit installed! */
 //#include <Cg/cgGL.h>
 
@@ -44,7 +46,7 @@ int CheckGLError(char *file, int line)
 		retCode = 1;
 		glErr = glGetError();
 	}
-	if (glErr2 != GL_NO_ERROR) while(1)Sleep(100);;
+	if (glErr2 != GL_NO_ERROR) while(1)usleep(100 * 1000);;
 
 	return 0;
 }
@@ -637,7 +639,7 @@ int glShaderObject::load(char* filename)
     ShaderSource[len] = 0;  // len isn't always strlen cause some characters are stripped in ascii read...
                             // it is important to 0-terminate the real length later, len is just max possible value...
    
-	FILE* fn; fopen_s(&fn,filename, "rb");
+	FILE* fn = fopen(filename, "rb");
 	fread(ShaderSource, len , 1, fn);
 	fclose(fn);
       

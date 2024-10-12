@@ -1,6 +1,6 @@
 #pragma once
 #include "core.h"
-#include "rle4.h"
+#include "Rle4.h"
 #include <vector>
 #include "VecMath.h"
 

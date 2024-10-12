@@ -1,4 +1,3 @@
-#pragma once
 #include "tree.h"
 /*------------------------------------------------------*/
 //	std::vector<float> triangle_list;
