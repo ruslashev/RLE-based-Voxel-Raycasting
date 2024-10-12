@@ -57,7 +57,7 @@ struct GL_Main
 		GLenum err = glGetError();
 		if (err != GL_NO_ERROR) 
 		{
-			printf("GL Error: %s\n",gluErrorString(err));
+			printf("GL Error: %d\n",err);
 			printf("Programm Stopped!\n");
 			while(1)usleep(1000 * 1000);;
 		}
@@ -216,7 +216,7 @@ class FBO {
 		GLenum err = glGetError();
 		if (err != GL_NO_ERROR) 
 		{
-			printf("GL FBO Error: %s\n",gluErrorString(err));
+			printf("GL FBO Error: %d\n",err);
 			printf("Programm Stopped!\n");
 			while(1);;
 		}

@@ -64,11 +64,11 @@ cutCheckErrorGL( const char* file, const int line)
 		char tmpStr[512];
 		// NOTE: "%s(%i) : " allows Visual Studio to directly jump to the file at the right line
 		// when the user double clicks on the error line in the Output pane. Like any compile error.
-		sprintf_s(tmpStr, 255, "\n%s(%i) : GL Error : %s\n\n", file, line, gluErrorString(gl_error));
+		sprintf_s(tmpStr, 255, "\n%s(%i) : GL Error : %d\n\n", file, line, gl_error);
 		OutputDebugString(tmpStr);
 #endif
 		fprintf(stderr, "GL Error in file '%s' in line %d :\n", file, line);
-		fprintf(stderr, "%s\n", gluErrorString(gl_error));
+		fprintf(stderr, "%d\n", gl_error);
 		ret_val = CUTFalse;
 	}
 	return ret_val;

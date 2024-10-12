@@ -38,11 +38,7 @@ int CheckGLError(char *file, int line)
 	glErr = glErr2 = glGetError();
 	while (glErr != GL_NO_ERROR) 
 	{
-	   char* str1 = (char*)gluErrorString(glErr);
-	   if (str1)
-			cout << "GL Error #" << glErr << "(" << str1 << ") " << " in File " << file << " at line: " << line << endl;
-	   else
-			cout << "GL Error #" << glErr << " in File " << file << " at line: " << line << endl;
+		cout << "GL Error #" << glErr << " in File " << file << " at line: " << line << endl;
 		retCode = 1;
 		glErr = glGetError();
 	}

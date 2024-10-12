@@ -18,7 +18,7 @@ cflags = \
          -g \
          -w
 
-lflags = -lglut -lGLU -lGLEW -lGL ./Cuda_Main.o -L /usr/local/cuda-11.8/targets/x86_64-linux/lib -lcudart
+lflags = -lglut -lGLEW -lGL ./Cuda_Main.o -L /usr/local/cuda-11.8/targets/x86_64-linux/lib -lcudart
 
 cxx = g++
 
