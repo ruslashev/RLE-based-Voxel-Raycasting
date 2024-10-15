@@ -415,24 +415,11 @@ struct Render
 			int vx = (voxel_x >> mip_lvl) & (rle4_gridx - 1);
 			int vz = (voxel_z >> mip_lvl) & (rle4_gridz - 1);
 
-#ifdef MOUNTAINS
-			float xx1 = float(voxel_x) / 1000.0f;
-			float zz1 = float(voxel_z) / 1000.0f;
-			float sinadd
-				= (sin(xx1 / 2 + zz1 / 3) + cos(zz1 / 2 + xx1) * 0.5 + cos(zz1)) * 500 + 500;
-			float sinadd2
-				= (sin(xx1 / 17 + zz1 / 19) + cos(zz1 / 12 + xx1 / 13) * 0.5 + cos(zz1 / 31)) * 4500
-				+ 4500;
-			float mountain = viewpos.y + sinadd;
-#else
-			float mountain = viewpos.y;
-#endif
-
 			float correct_x = ray_x * dds_dist_delta;
 			float correct_z = ray_z * dds_dist_delta;
 
-			float pos3d_z = cos_x * (view_space.z) + sin_x * mountain;
-			float pos3d_y = (vertical) ? cos_x * mountain - sin_x * (view_space.z) : view_space.x;
+			float pos3d_z = cos_x * (view_space.z) + sin_x * viewpos.y;
+			float pos3d_y = (vertical) ? cos_x * viewpos.y - sin_x * (view_space.z) : view_space.x;
 
 			pos3d_y *= res_x2_mul_reverse;
 
@@ -504,7 +491,7 @@ struct Render
 
 				float correct_zz1 = pos3d_z;
 				float correct_yy1 = pos3d_y;
-				if (mountain + sti_general_sti_skip >= 0) {
+				if (viewpos.y + sti_general_sti_skip >= 0) {
 					correct_zz1 += corr_zz;
 					correct_yy1 += corr_yy;
 				}
@@ -520,7 +507,7 @@ struct Render
 
 				float correct_zz2 = pos3d_z;
 				float correct_yy2 = pos3d_y;
-				if (mountain + sti_general < 0) {
+				if (viewpos.y + sti_general < 0) {
 					correct_zz2 += corr_zz;
 					correct_yy2 += corr_yy;
 				}
@@ -655,7 +642,7 @@ struct Render
 				int sa = 0;
 #endif
 #ifdef HEIGHT_COLOR
-				int height_color = 4095 - mountain + viewpos.y;
+				int height_color = 4095;
 #endif
 
 				float mult = y + 1 - scr_y1r;

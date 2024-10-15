@@ -15,7 +15,6 @@
 
 // #define ANTIALIAS
 // #define WONDERLAND
-// #define MOUNTAINS
 // #define BONSAI
 // #define VOXELSTEIN
 #define BUDDHA
