@@ -65,28 +65,10 @@ int main(int argc, char** argv)
 
 	RLE4 rle4;
 
-	/*
-	   rle4.loadvxl("../untitled.vxl");
-	   rle4.save("voxelstein.rle4");
-	   return 0;
-	   */
-
-	printf("Creating Scene \r");
-
 	rle4.init();
 
 	if (!rle4.load("Imrodh.rle4"))
 		return 0;
-
-	/*
-	 * ushort* vxl = rle4.uncompress(rle4.map4);
-	 * int m4sx = rle4.map4.sx/2;
-	 * int m4sy = rle4.map4.sy/2;
-	 * int m4sz = rle4.map4.sz/2;
-	 * rle4.clear();
-	 * Map4 m4 = rle4.compress_mip(vxl,m4sx,m4sy,m4sz);
-	 * rle4.map4=m4;
-	 */
 
 	printf("loading ready.\n");
 	rle4.all_to_gpu();

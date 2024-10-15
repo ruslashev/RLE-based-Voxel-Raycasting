@@ -216,15 +216,22 @@ long RLE4::loadvxl(const char* filnam)
 	dpoint3d ipos, istr, ihei, ifor;
 
 	FILE* fil;
-	long i, x, y, z;
+	int32_t i;
+	long x, y, z;
 	unsigned char *v, *vbuf;
 
 	fil = fopen(filnam, "rb");
-	if (!fil)
-		return (-1);
+	if (!fil) {
+		printf("failed to open file '%s'\n", filnam);
+		return -1;
+	}
+
 	fread(&i, 4, 1, fil);
-	if (i != 0x09072000)
+	if (i != 0x09072000) {
+		printf("loadvxl: %s: invalid magic: %x\n", filnam, i);
 		return (-1);
+	}
+
 	fread(&i, 4, 1, fil);
 	if (i != 1024)
 		return (-1);
