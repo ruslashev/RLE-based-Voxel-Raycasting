@@ -26,7 +26,7 @@ void RLE4::clear()
 	init();
 }
 
-void RLE4::save(char* filename)
+void RLE4::save(const char* filename)
 {
 	FILE* fn;
 
@@ -65,7 +65,7 @@ static void* malloc_check(size_t sz)
 	return ptr;
 }
 
-bool RLE4::load(char* filename)
+bool RLE4::load(const char* filename)
 {
 	FILE* fn;
 
@@ -208,7 +208,7 @@ void RLE4::setcol(long x, long y, long z, long argb)
 	volu[ofs] = r + (g << 5) + (b << 10) + (1 << 15);
 }
 
-long RLE4::loadvxl(char* filnam)
+long RLE4::loadvxl(const char* filnam)
 {
 	struct dpoint3d {
 		double x, y, z;

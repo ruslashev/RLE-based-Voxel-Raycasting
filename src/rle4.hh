@@ -20,12 +20,12 @@ struct RLE4
 
 	void init();
 	void clear();
-	void save(char* filename);
-	bool load(char* filename);
+	void save(const char* filename);
+	bool load(const char* filename);
 	Map4 copy_to_gpu(Map4 map4);
 	void all_to_gpu();
 	void all_to_gpu_tex();
 	void setcol(long x, long y, long z, long argb);
-	long loadvxl(char* filnam);
+	long loadvxl(const char* filnam);
 	Map4 compressvxl(ushort* mem, int sx, int sy, int sz, int mip_lvl);
 };
