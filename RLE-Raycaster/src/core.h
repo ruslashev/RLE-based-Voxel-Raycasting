@@ -1,5 +1,6 @@
 #pragma once////////////////////////////////////////////////////////////////////////////////
 //#define MEM_TEXTURE
+#include <cstdint>
 #define SCREEN_SIZE_X 1024
 #define SCREEN_SIZE_Y 768
 #define RENDER_SIZE 1024
@@ -148,7 +149,7 @@ extern "C" {
 extern void	cpu_memcpy(void* dst, void* src, int count);
 extern void	gpu_memcpy(void* dst, void* src, int count);
 extern void*	gpu_malloc(int size);
-extern int		cpu_to_gpu_delta;
+extern intptr_t		cpu_to_gpu_delta;
 ////////////////////////////////////////////////////////////////////////////////
 #ifdef __cplusplus
 }

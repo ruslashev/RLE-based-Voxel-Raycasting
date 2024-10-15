@@ -7,6 +7,7 @@
 #include <vector>
 #include "VecMath.h"
 #include "Bmp.h"
+#include "alloc.hh"
 #else
 typedef float3 vec3f;
 typedef int3 vec3i;
@@ -440,10 +441,19 @@ void RLE4::all_to_gpu()
 Map4 RLE4::copy_to_gpu(Map4 map4)
 {
 	Map4 map4gpu=map4;
-	map4gpu.map		= (uint*)((uint)(((char*)malloc(map4.sx*map4.sz*4*2+32))+cpu_to_gpu_delta+31) & 0xffffffe0 );
-	map4gpu.slabs	= (ushort*)	((uint)(((char*)malloc(map4.slabs_size*2+32))+cpu_to_gpu_delta+31)& 0xffffffe0 );
-	gpu_memcpy((char*)map4gpu.map,(char*)map4.map,map4.sx*map4.sz*4*2);
-	gpu_memcpy((char*)map4gpu.slabs,(char*)map4.slabs,map4.slabs_size*2);
+
+	size_t map_len   = map4.sx*map4.sz*4*2;
+	size_t slabs_len = map4.slabs_size*2;
+
+	uintptr_t map_gpu   = (uintptr_t)bmalloc(map_len + 32)   + cpu_to_gpu_delta;
+	uintptr_t slabs_gpu = (uintptr_t)bmalloc(slabs_len + 32) + cpu_to_gpu_delta;
+
+	map4gpu.map		=   (uint*)((map_gpu + 31)   & 0xffffffffffffffe0);
+	map4gpu.slabs	= (ushort*)((slabs_gpu + 31) & 0xffffffffffffffe0);
+
+	gpu_memcpy((char*)map4gpu.map, (char*)map4.map, map_len);
+	gpu_memcpy((char*)map4gpu.slabs, (char*)map4.slabs, slabs_len);
+
 	return map4gpu;
 }
 /*------------------------------------------------------*/

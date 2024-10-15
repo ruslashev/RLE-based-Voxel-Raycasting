@@ -30,6 +30,7 @@ float global_z;
 void CUT_CHECK_ERROR_GL(){};
 #endif
 ////////////////////////////////////////////////////////////////////////////////
+#include "alloc.hh"
 #include "Rle4.h"
 #include "RayMap.h"
 #include "tree.h"
@@ -54,17 +55,44 @@ static  int cuda_time = 0;
 ///////////////////////////////////////////
 // Program main
 ////////////////////////////////////////////////////////////////////////////////
+
+static void* alligned_alloc_zeroed_cpu(size_t sz)
+{
+	void* ptr = malloc(sz + 16);
+
+	if (!ptr) {
+		printf("failed to alloc %zu B\n", sz);
+		exit(1);
+	}
+
+	memset(ptr, 0, sz + 16);
+
+	uintptr_t addr = (uintptr_t)ptr;
+	uintptr_t aligned = (addr + 16) & 0xfffffffffffffff0;
+
+	return (void*)aligned;
+}
+
+static void* aligned_alloc_gpu(size_t sz)
+{
+	void* ptr = gpu_malloc(sz + 16);
+	uintptr_t addr = (uintptr_t)ptr;
+	uintptr_t aligned = (addr + 16) & 0xfffffffffffffff0;
+
+	return (void*)aligned;
+}
+
 int main( int argc, char** argv) {
 
 	// timeBeginPeriod(1); 
 
-	int pool_size=100*1024*1024;
-	char* pool     = (char*)(((uint)malloc(pool_size+16)+16)&0xfffffff0);
-	char* pool_gpu = (char*)(((uint)gpu_malloc(pool_size+16)+16)&0xfffffff0);
-	cpu_to_gpu_delta=((int)pool_gpu - (int)pool)&0xfffffff0;
+	int pool_size=300*1024*1024;
+	char* pool     = (char*)alligned_alloc_zeroed_cpu(pool_size);
+	char* pool_gpu = (char*)aligned_alloc_gpu(pool_size);
+	cpu_to_gpu_delta=((intptr_t)pool_gpu - (intptr_t)pool)&0xfffffffffffffff0;
 
-	memset  (pool , 0,pool_size);
-	// add_pool(pool ,   pool_size);
+	arena_init(pool, pool_size);
+
 	printf("pool:%d\n",(int)pool);
 	//realloc(pool,1*1024*1024);
 	//free(pool);

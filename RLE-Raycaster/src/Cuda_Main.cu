@@ -15,6 +15,7 @@
 #include <cuda_gl_interop.h>
 #include "cutil_math.h"
 ////////////////////////////////////////////////////////////////////////////////
+#include "alloc.hh"
 #include "RayMap.h"
 #include "Cuda_Render.h"
 #include "Rle4.h"
@@ -124,7 +125,7 @@ int ChkGLError(char *file, int line)
 extern "C" void cuda_main_render2( int pbo_out, int width, int height,RayMap_GPU* raymap);
 extern "C" void pboRegister(int pbo);
 extern "C" void pboUnregister(int pbo);
-int	cpu_to_gpu_delta=0;
+intptr_t	cpu_to_gpu_delta=0;
 ////////////////////////////////////////////////////////////////////////////////
 void gpu_memcpy(void* dst, void* src, int size)
 {
@@ -187,8 +188,12 @@ void cuda_main_render2( int pbo_out, int width, int height,RayMap_GPU* raymap)
 	if(pbo_out==0) return;
 
     static Render render;
-    static Render *render_gpu=(Render*) ((char*)malloc(sizeof(Render))+cpu_to_gpu_delta);
-    static ushort* skipmap_gpu=(ushort*)((char*)malloc(RAYS_CASTED*RENDER_SIZE*4)+cpu_to_gpu_delta);
+
+	size_t render_len  = sizeof(Render);
+	size_t skipmap_len = RAYS_CASTED*RENDER_SIZE*4;
+
+	static Render* render_gpu  = (Render*)((uintptr_t)bmalloc(render_len)  + cpu_to_gpu_delta);
+	static ushort* skipmap_gpu = (ushort*)((uintptr_t)bmalloc(skipmap_len) + cpu_to_gpu_delta);
     
     if((long)render_gpu==cpu_to_gpu_delta){ printf("render_gpu 0 \n");while(1);;}
     int lines_to_raycast = raymap->map_line_count;
