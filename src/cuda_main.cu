@@ -5,10 +5,10 @@
 
 #define IN_CUDA_ENV
 
-#include "cutil_math.h"
-#include "mathlib/matrixdefs.h"
+#include "../inc/cutil_math.h"
+#include "../inc/cutil.h"
+#include "../inc/mathlib/matrixdefs.h"
 #include <cuda_gl_interop.h>
-#include <cutil.h>
 
 #include "alloc.hh"
 #include "ray_map.hh"
@@ -629,7 +629,7 @@ struct Render
 	}
 };
 
-void create_cuda_1d_texture(char* h_data, int size)
+void cuda_create_1d_texture(char* h_data, int size)
 {
 	int d_size = ((size >> 8) + 1) << 8;
 	uint* d_octree;
@@ -647,7 +647,7 @@ void create_cuda_1d_texture(char* h_data, int size)
 	CUDA_SAFE_CALL(cudaBindTexture(0, texture_slabs, d_octree, channelDesc));
 }
 
-void create_cuda_2d_texture(uint* h_data, int width, int height)
+void cuda_create_2d_texture(uint* h_data, int width, int height)
 {
 	// Allocate CUDA array in device memory
 	channelDesc_pointermap = cudaCreateChannelDesc(32, 32, 0, 0, cudaChannelFormatKindUnsigned);
@@ -695,7 +695,7 @@ void* gpu_malloc(int size)
 	return ptr;
 }
 
-__global__ void cudaRender(
+__global__ void cuda_render(
 		Render* render_local,
 		int maxrays,
 		vec3f viewpos,
@@ -764,7 +764,7 @@ void cuda_main_render2(int pbo_out, int width, int height, RayMap_GPU* raymap)
 
 	CUDA_SAFE_CALL(cudaThreadSynchronize());
 
-	cudaRender<<<grid, threads, 16300>>>(
+	cuda_render<<<grid, threads, 16300>>>(
 			render_gpu,
 			render.ray_map.map_line_count,
 			render.ray_map.position,
@@ -780,13 +780,13 @@ void cuda_main_render2(int pbo_out, int width, int height, RayMap_GPU* raymap)
 	CUDA_SAFE_CALL(cudaGLUnmapBufferObject(pbo_out));
 }
 
-void pboRegister(int pbo)
+void cuda_pbo_register(int pbo)
 {
 	CUDA_SAFE_CALL(cudaGLRegisterBufferObject(pbo));
 	CUT_CHECK_ERROR("cudaGLRegisterBufferObject failed");
 }
 
-void pboUnregister(int pbo)
+void cuda_pbo_unregister(int pbo)
 {
 	CUDA_SAFE_CALL(cudaGLUnregisterBufferObject(pbo));
 	CUT_CHECK_ERROR("cudaGLUnregisterBufferObject failed");

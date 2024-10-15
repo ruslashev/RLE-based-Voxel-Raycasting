@@ -213,7 +213,7 @@ void GL_Main::createPBO(GLuint* pbo, int image_width, int image_height, int bpp)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// attach this Buffer Object to CUDA
-	pboRegister(*pbo);
+	cuda_pbo_register(*pbo);
 
 	get_error();
 }

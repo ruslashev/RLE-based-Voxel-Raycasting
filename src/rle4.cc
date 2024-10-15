@@ -148,7 +148,7 @@ void RLE4::all_to_gpu_tex()
 		slabs_total += map[m].slabs_size;
 	}
 
-	create_cuda_1d_texture((char*)slabs_mem, slabs_total * 2);
+	cuda_create_1d_texture((char*)slabs_mem, slabs_total * 2);
 
 	char* mapdata64 = (char*)malloc_check(map[0].sx * 8 * map[0].sz * 2);
 
@@ -161,7 +161,7 @@ void RLE4::all_to_gpu_tex()
 		mapadd_y >>= 1;
 	}
 
-	create_cuda_2d_texture((uint*)mapdata64, map[0].sx, map[0].sz * 2);
+	cuda_create_2d_texture((uint*)mapdata64, map[0].sx, map[0].sz * 2);
 	free(mapdata64);
 }
 
