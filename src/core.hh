@@ -19,7 +19,6 @@
 //#define CLIPREGION
 
 //#define NO_ROTATION
-//#define DETAIL_BENCH
 //#define HEIGHT_COLOR
 
 #define FLOATING_HORIZON

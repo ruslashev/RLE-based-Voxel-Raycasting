@@ -341,10 +341,6 @@ struct Render
 		float pos3d_y_add = (vertical) ? cos_x:0;
 		  	  pos3d_y_add*=  res_x2_mul_reverse;
 
-#ifdef DETAIL_BENCH
-		int numpix = 0;
-		int rndpix = y_clip_max-y_clip_min;
-#endif
 
 		uint*    map_ptr = ray_map.map4_gpu[mip_lvl].map;
 		ushort* slab_ptr = ray_map.map4_gpu[mip_lvl].slabs;
@@ -393,10 +389,7 @@ while(true){
 		z+=dz;
 		if (z>z_far)return;
 
-#ifndef DETAIL_BENCH
 		if ((y_clip_min>=y_clip_max))	return;
-//		if ((y_clip_min>>1>=y_clip_max>>1)||(numpix==rndpix))	return;
-#endif
 
 		/////////////////////////////////////////// 
 		//DDA				
@@ -529,10 +522,6 @@ while(true){
 		sti_general = 0 ; 
 		sti_skip = 0;
 
-#ifdef DETAIL_BENCH
-		perf[x].elems_total+=slen;
-		if ((y_clip_min>>1>=y_clip_max>>1)||(numpix==rndpix))	continue;
-#endif
 		uint slabs1=(uint)slabs;
 
 		#pragma unroll 2
@@ -560,10 +549,6 @@ while(true){
 			float correct_yy1=pos3d_y;
 			if ( mountain+sti_general_sti_skip>=0){correct_zz1+=corr_zz;correct_yy1+=corr_yy;} 
 
-#ifdef DETAIL_BENCH
-		perf[x].voxels_processed+=sti_skip;
-		perf[x].elems_processed++;
-#endif
 			pos3d_z1=correct_zz1+pos3d_z_add*sti_general_sti_skip;if (pos3d_z1<=0) continue;
 			pos3d_y1=correct_yy1+pos3d_y_add*sti_general_sti_skip;
 			scr_y2 = res_y2 + pos3d_y1 / pos3d_z1 ;			
@@ -685,9 +670,6 @@ while(true){
 
 			u2dz  /=scr_y2r-scr_y1r;
 			onedz2/=scr_y2r-scr_y1r;
-#ifdef DETAIL_BENCH
-			perf[x].elems_rendered++;
-#endif
 
 #ifdef PERPIXELFORWARD
 			int skip_add = ofs_skip_start[scr_y2-1];
@@ -751,9 +733,6 @@ while(true){
 #ifdef PERPIXELFORWARD
 				++y;
 #endif				
-#ifdef DETAIL_BENCH
-				perf[x].pixels++;
-#endif
 #ifdef SHAREMEMCLIP
 				y_cache[y5] |= y31;
 #endif				
@@ -946,17 +925,6 @@ void cuda_main_render2( int pbo_out, int width, int height,RayMap_GPU* raymap)
     render.set_target( width, height, (int*) out_data);
   	render.set_raymap( raymap );
 
-#ifdef DETAIL_BENCH
-	for(int t=0;t<RAYS_CASTED;t++)
-	{
-		render.perf[t].elems_total=0;
-		render.perf[t].elems_processed=0;
-		render.perf[t].voxels_processed=0;
-		render.perf[t].elems_rendered=0;
-		render.perf[t].pixels=0;
-	}
-#endif
-	
 	gpu_memcpy(render_gpu, &render, sizeof(Render));
    
 	// int t1 = timeGetTime();
@@ -984,32 +952,6 @@ void cuda_main_render2( int pbo_out, int width, int height,RayMap_GPU* raymap)
 	CUDA_SAFE_CALL( cudaThreadSynchronize() );
 	// int t2 = timeGetTime();
 
-#ifdef DETAIL_BENCH
-	cpu_memcpy(&render.perf[0],&(render_gpu->perf[0]),  sizeof(Render::Perf)*RAYS_CASTED);
-	Render::Perf p;
-	p.elems_total=0;
-	p.elems_processed=0;
-	p.voxels_processed=0;
-	p.elems_rendered=0;
-	p.pixels=0;
-	for(int t=0;t<RAYS_CASTED;t++)
-	{
-		p.elems_total+=render.perf[t].elems_total;
-		p.elems_processed+=render.perf[t].elems_processed;
-		p.voxels_processed+=render.perf[t].voxels_processed;
-		p.elems_rendered+=render.perf[t].elems_rendered;
-		p.pixels+=render.perf[t].pixels;
-	}
-	
-	printf ("all %2.2fM proc %2.2fM vp %2.2fM ren %2.2fM pix %2.2fM ",
-		float(p.elems_total)/(1000*1000),
-		float(p.elems_processed)/(1000*1000),
-		float(p.voxels_processed)/(1000*1000),
-		float(p.elems_rendered)/(1000*1000),
-		float(p.pixels)/(1000*1000));
-#endif		
-	//printf ("mem%d ren%d ",t1-t0,t2-t1);
-    
     CUDA_SAFE_CALL(cudaGLUnmapBufferObject( pbo_out));
 }
 ////////////////////////////////////////////////////////////////////////////////
