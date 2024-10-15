@@ -141,17 +141,11 @@ class Screen
 extern Keyboard		keyboard;
 extern Mouse		mouse;
 extern Screen		screen;
-////////////////////////////////////////////////////////////////////////////////
-#ifdef __cplusplus
-extern "C" {
-#endif 
-////////////////////////////////////////////////////////////////////////////////
-extern void	cpu_memcpy(void* dst, void* src, int count);
-extern void	gpu_memcpy(void* dst, void* src, int count);
-extern void*	gpu_malloc(int size);
-extern intptr_t		cpu_to_gpu_delta;
-////////////////////////////////////////////////////////////////////////////////
-#ifdef __cplusplus
-}
-#endif 
-////////////////////////////////////////////////////////////////////////////////
+
+extern "C" void  cpu_memcpy(void* dst, void* src, int count);
+extern "C" void  gpu_memcpy(void* dst, void* src, int count);
+extern "C" void* gpu_malloc(int size);
+extern "C" void  create_cuda_1d_texture(char* data32, int size);
+extern "C" void  create_cuda_2d_texture(uint* data64, int width,int height);
+
+extern intptr_t cpu_to_gpu_delta;

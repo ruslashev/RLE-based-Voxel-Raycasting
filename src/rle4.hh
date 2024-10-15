@@ -1,48 +1,31 @@
 #pragma once
-#include "core.hh"
 
-extern "C" void create_cuda_1d_texture(char* data32, int size);
-extern "C" void create_cuda_2d_texture(uint* data64, int width,int height);
+#include "core.hh"
 
 struct Map4
 {
-	int    sx,sy,sz,slabs_size;
-	//uint   *map_mem;
-	uint   *map;
-	ushort *slabs;
-	//uint	nop;
-
-	// map:
-	// id 0 : rle siz
-	// id 0 : tex siz
-	// id 1 : rle len
-	// id 2 : rle elems ... []
-	// id x : tex elems ... []
+	int sx;
+	int sy;
+	int sz;
+	int slabs_size;
+	uint* map;
+	ushort* slabs;
 };
 
-class Tree;
-
 struct RLE4
-{	
-	/*------------------------------------------------------*/
-	Map4 map[16],mapgpu[16];int nummaps;
-	/*------------------------------------------------------*/
+{
+	Map4 map[16];
+	Map4 mapgpu[16];
+	int nummaps;
+
 	void init();
-	/*------------------------------------------------------*/
 	void clear();
-	/*------------------------------------------------------*/
-	void save(char *filename);
-	/*------------------------------------------------------*/
-	bool load(char *filename);
-	/*------------------------------------------------------*/
+	void save(char* filename);
+	bool load(char* filename);
 	Map4 copy_to_gpu(Map4 map4);
-	/*------------------------------------------------------*/
 	void all_to_gpu();
 	void all_to_gpu_tex();
-	/*------------------------------------------------------*/
-	void setgeom (long x, long y, long z, long issolid);
-	void setcol (long x, long y, long z, long argb);
-	long loadvxl (char *filnam);
-	Map4 compressvxl(ushort* mem,int sx,int sy,int sz,int mip_lvl);
-	/*------------------------------------------------------*/
+	void setcol(long x, long y, long z, long argb);
+	long loadvxl(char* filnam);
+	Map4 compressvxl(ushort* mem, int sx, int sy, int sz, int mip_lvl);
 };
