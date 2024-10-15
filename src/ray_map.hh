@@ -7,6 +7,7 @@
 ///////////////////////////////////////////
 #ifndef IN_CUDA_ENV
 #include "vec_math.hh"
+#include "../inc/mathlib/matrix.h"
 #else
 typedef float3 vec3f;
 typedef int3 vec3i;
