@@ -25,7 +25,6 @@ float global_x;
 float global_y;
 float global_z;
 
-
 #ifndef CUT_CHECK_ERROR_GL
 void CUT_CHECK_ERROR_GL(){};
 #endif
@@ -34,6 +33,12 @@ void CUT_CHECK_ERROR_GL(){};
 #include "rle4.hh"
 #include "ray_map.hh"
 #include "gl_main.hh"
+
+RayMap   ray_map;
+Keyboard keyboard;
+Mouse    mouse;
+Screen   screen;
+
 // #include "../src.BestFitMem/bmalloc.h"
 ////////////////////////////////////////////////////////////////////////////////
 //extern "C" RayMap_GPU ray_map_GPU;
