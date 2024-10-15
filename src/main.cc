@@ -31,9 +31,9 @@ void CUT_CHECK_ERROR_GL(){};
 #endif
 ////////////////////////////////////////////////////////////////////////////////
 #include "alloc.hh"
-#include "Rle4.hh"
-#include "RayMap.hh"
-#include "GL_Main.hh"
+#include "rle4.hh"
+#include "ray_map.hh"
+#include "gl_main.hh"
 // #include "../src.BestFitMem/bmalloc.h"
 ////////////////////////////////////////////////////////////////////////////////
 //extern "C" RayMap_GPU ray_map_GPU;

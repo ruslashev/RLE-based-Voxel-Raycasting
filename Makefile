@@ -1,14 +1,14 @@
 src = \
-      src/alloc.cpp \
-      src/Core.cpp \
-      src/GL_Main.cpp \
-      src/RayMap.cpp \
-      src/Rle4.cpp \
-      src/VecMath.cpp \
-      src/glsl.cpp \
-      src/main.cpp
+      src/alloc.cc \
+      src/core.cc \
+      src/gl_main.cc \
+      src/ray_map.cc \
+      src/rle4.cc \
+      src/vec_math.cc \
+      src/glsl.cc \
+      src/main.cc
 
-obj = $(src:src/%.cpp=obj/%.o) obj/Cuda_Main.o
+obj = $(src:src/%.cc=obj/%.o) obj/cuda_main.o
 
 cflags = \
          -I inc \
@@ -33,12 +33,12 @@ $(bin): $(obj)
 	@echo ld $@
 	@$(cxx) $^ -o $@    $(lflags)
 
-obj/%.o: src/%.cpp
+obj/%.o: src/%.cc
 	@echo cxx $<
 	@mkdir -p $(@D)
 	@$(cxx) $^ -o $@ -c $(cflags)
 
-obj/Cuda_Main.o: src/Cuda_Main.cu
+obj/cuda_main.o: src/cuda_main.cu
 	@echo nvcc $^
 	@mkdir -p $(@D)
 	@nvcc   $^ -o $@ -c $(nflags)

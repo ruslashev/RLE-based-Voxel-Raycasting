@@ -2,11 +2,11 @@
 #pragma once
 ///////////////////////////////////////////
 #include "core.hh"
-#include "Rle4.hh"
+#include "rle4.hh"
 /* #include "../src.BestFitMem/bmalloc.h" */
 ///////////////////////////////////////////
 #ifndef IN_CUDA_ENV
-#include "VecMath.hh"
+#include "vec_math.hh"
 #else
 typedef float3 vec3f;
 typedef int3 vec3i;

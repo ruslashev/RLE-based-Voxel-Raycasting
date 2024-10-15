@@ -1,4 +1,4 @@
-#include "VecMath.hh"
+#include "vec_math.hh"
 
 int vec3f::random_number = 3457734;
 
