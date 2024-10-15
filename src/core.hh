@@ -27,7 +27,6 @@
 
 // clipping
 // #define CENTERSEG
-// #define NORMALCLIP
 // #define PERPIXELFORWARD
 #define SHAREMEMCLIP
 

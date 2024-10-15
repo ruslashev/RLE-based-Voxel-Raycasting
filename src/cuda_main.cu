@@ -599,10 +599,6 @@ struct Render
 				if (y >= scr_y2)
 					continue;
 #endif
-#ifdef NORMALCLIP
-				// while (y < scr_y2 && (((uint*)ofs_rgb_start)[y] != 0xff8844)) ++y;
-				// while (y_clip_max > y_clip_min && (((uint*)ofs_rgb_start)[y_clip_min] != 0xff8844)) ++y_clip_min;
-#endif
 #ifdef SHAREMEMCLIP
 #ifdef CENTERSEG
 #ifdef XFLOATING_HORIZON
@@ -663,10 +659,6 @@ struct Render
 					int skip_plus = scr_y2 - 1 - y; //+ skip_add;
 					int skip_minus = -scr_y1 + y + iskip_add;
 					ofs_skip_start[y] = skip_plus; //+ ( skip_minus<<16 );
-#endif
-#ifdef NORMALCLIP
-					if (((uint*)ofs_rgb_start)[y] != 0xff8844)
-						continue;
 #endif
 #ifdef SHAREMEMCLIP
 					int y5 = y >> 5;
