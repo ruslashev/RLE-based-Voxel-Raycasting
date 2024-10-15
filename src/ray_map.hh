@@ -1,6 +1,5 @@
 #pragma once
 
-#include "core.hh"
 #include "rle4.hh"
 
 #ifdef IN_CUDA_ENV

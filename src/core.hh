@@ -148,4 +148,7 @@ extern "C" void* gpu_malloc(int size);
 extern "C" void  create_cuda_1d_texture(char* data32, int size);
 extern "C" void  create_cuda_2d_texture(uint* data64, int width,int height);
 
+struct RayMap_GPU;
+extern "C" void  cuda_main_render2(int pbo_out, int width, int height, RayMap_GPU* raymap);
+
 extern intptr_t cpu_to_gpu_delta;
