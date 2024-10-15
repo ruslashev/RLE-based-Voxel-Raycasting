@@ -1,12 +1,9 @@
 src = \
       src/alloc.cpp \
-      src/Bmp.cpp \
       src/Core.cpp \
-      src/DrawUtils.cpp \
       src/GL_Main.cpp \
       src/RayMap.cpp \
       src/Rle4.cpp \
-      src/Tree.cpp \
       src/VecMath.cpp \
       src/glsl.cpp \
       src/main.cpp

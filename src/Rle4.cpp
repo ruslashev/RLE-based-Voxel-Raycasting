@@ -1,202 +1,18 @@
 // #include <windows.h>
 /*------------------------------------------------------*/
 #include "Rle4.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <vector>
 // #include "../src.BestFitMem/bmalloc.h"
 /*------------------------------------------------------*/
 #ifndef IN_CUDA_ENV
-#include <vector>
-#include "VecMath.h"
-#include "Bmp.h"
 #include "alloc.hh"
 #else
 typedef float3 vec3f;
 typedef int3 vec3i;
 #endif
-#include "tree.h"
-/*------------------------------------------------------*/
-void RLE4::compress_all(Tree& tree)
-{
-	int m;
-	Tree t[16]; 
-
-	t[0] = tree;
-
-	printf("MipVol0 : %d x %d x %d\n",t[0].vx,t[0].vy,t[0].vz);
-
-	for (nummaps=0;nummaps<15;nummaps++)
-	{
-		m=nummaps;
-		if(t[m].vx<4) break; 
-		if(t[m].vy<4) break; 
-		if(t[m].vz<4) break; 
-		t[m+1].get_mipmap(t[m]);
-		printf("MipVol%d : %d x %d x %d\n",m+1,t[m+1].vx,t[m+1].vy,t[m+1].vz);
-	}
-	nummaps++;
-	printf("Num Mips:%d\n",nummaps);
-
-	for (m=0;m<nummaps;m++)
-	{
-		printf("Compress MipVol %d\n",m);
-		map[m]=compress(t[m],m);
-
-		if(t[m].faces_arr.size()>0)
-			t[m].colorize_map(map[m]);
-		//t[m].exit();
-
-		if(map[m].slabs_size==0){nummaps=m-1;break;}
-	}
-
-}
-//----------------------------------------------------------------------------
-
-Map4 RLE4::compress(Tree& tree,int mip_lvl)//int sx,int sy,int sz,uchar* col1,uchar* col2);uchar* mem, int sx,int sy,int sz,uchar* col1,uchar* col2)
-{
-	int scale = 1<<mip_lvl;
-	int sx = tree.vx;
-	int sy = tree.vy;
-	int sz = tree.vz;
-
-	uchar* mem =(uchar*)tree.voxel;
-	uchar* col1=tree.voxel_col1;
-	uchar* col2=tree.voxel_col2;
-
-	Map4 map4;
-
-	map4.sx=sx;
-	map4.sy=sy;
-	map4.sz=sz;
-	int sxy = sx*sy;
-
-	std::vector<ushort> slab;
-	std::vector<ushort> texture;
-	std::vector<uint> map;
-
-	map.resize(sx*sz);
-
-	bool store=false;
-	
-	for (int k=0;k<sz;k++)
-	for (int i=0;i<sx;i++)
-	{
-		map[ i+k*sx ] = slab.size();
-
-		int slab_len = slab.size(); slab.push_back(0);
-		int tex_len  = slab.size(); slab.push_back(0);
-
-		int  skip=0,solid=0;
-
-		texture.clear();
-
-		for (int j=0;j<sy+1;j++)
-		{
-			uchar f=0;
-			
-			if (j<sy) f=mem[(i+j*sx+k*sxy)>>3] & (1<<(i&7));
-
-			store=false;
-
-			int nx,ny,nz;
-						
-			if (f)
-			{
-				int cnt=0;
-				int mx=0;
-				int my=0;
-				int mz=0;
-
-				for (int a=-1;a<2;a++)
-				for (int b=-1;b<2;b++)
-				for (int c=-1;c<2;c++)
-				{
-					int x=i+a;
-					int y=j+b;
-					int z=k+c;
-
-					if (x<0)continue;
-					if (y<0)continue;
-					if (z<0)continue;
-					if (x>=sx)continue;
-					if (y>=sy)continue;
-					if (z>=sz)continue;
-
-					uchar d=mem[(x+y*sx+z*sxy)>>3] & (1<<(x&7));
-
-					if(d)
-					{
-						mx+=a;
-						my+=b;
-						mz+=c;
-						cnt++;
-					}
-				}
-				if (cnt<27) 
-				{
-					vec3f centroid( -mx,my,-mz );
-					centroid.normalize();
-					nx = int(float(127.0f*centroid.x + 128.0f)); if (nx>255)nx=255; if (nx<0)nx=0;
-					ny = int(float(127.0f*centroid.y + 128.0f)); if (ny>255)ny=255; if (ny<0)ny=0;
-					nz = int(float(127.0f*centroid.z + 128.0f)); if (nz>255)nz=255; if (nz<0)nz=0;
-					int bit1=0,bit2=0;
-
-					if(col1)
-					{
-						bit1 = (col1[(i+j*sx+k*sxy)>>3] & (1<<(i&7))) ? 256 : 0;
-						bit2 = (col2[(i+j*sx+k*sxy)>>3] & (1<<(i&7))) ? 512 : 0;
-					}
-					
-					int mat=(bit1|bit2)>>8;
-					float rnd1=sin( 7*float(i*scale)*2*3.1415/sx)*cos(3 *float(j*scale)*2*3.1415/sy);
-					float rnd2=sin( 3*float(j*scale)*2*3.1415/sy)*cos(5 *float(k*scale)*2*3.1415/sz);
-					float rnd3=sin( 7*float(k*scale)*2*3.1415/sz)*cos(4 *float(i*scale)*2*3.1415/sx);
-					int rnd4= (rnd1+rnd2+rnd3+3);
-					
-					
-					//ny = ( ny * (rnd4+9)  ) >> 4;
-					if(mat==0) ny = (ny * (((((i*scale)  ^ (k*scale ))>>4)&15)+15)) >> 5;
-					if(mat==3) ny = (ny * (((((i*scale ) ^ (k*scale ))>>3)&15)+25)) >> 5;
-					//ny=(ny*300)/255-25;
-					if(ny>255)ny=255;									
-					if(ny<0)ny=0;									
-
-					texture.push_back(ny|bit1|bit2);
-					store=true;
-				}
-			}
-
-			if(solid>0)if(!store) 
-			{
-				while(skip>1023)
-				{
-					slab.push_back(1023);
-					skip-=1023;
-				}
-				while(solid>63)	
-				{
-					slab.push_back(63*1024+(skip&1023));
-					solid-=63;
-					skip=0;
-				}
-				slab.push_back((solid&63)*1024+(skip&1023));
-				solid=0;
-				skip=0;
-			}
-
-			if(store) solid++; else skip++;
-		}
-		slab[slab_len]=slab.size()-(slab_len+2);
-		slab[tex_len]=texture.size();
-		for (int i=0;i<texture.size();i++)	slab.push_back(texture[i]);
-	}
-	map4.map = (uint*) malloc (sx*sz*4);
-	memcpy(map4.map, &map[0], sx*sz*4);
-
-	map4.slabs = (ushort*) malloc (slab.size()*2);
-	memcpy(map4.slabs, &slab[0], slab.size()*2);
-
-	map4.slabs_size=slab.size();
-	return map4;
-}
 /*------------------------------------------------------*/
 void RLE4::init()
 {
@@ -336,48 +152,6 @@ bool RLE4::load(char *filename)
 	// printf("Total Number of RLE Elements:%d\n",total_numrle);
 	// printf("Total Number of Voxels:%d\n",total_numtex);
 	// printf("Total Bits per Voxel:%2.2f (RLE)+ %2.2f (Color)\n",float(total_numrle*16)/float(numtex_0),float(total_numtex*16)/float(numtex_0));
-	
-
-	Map4 map4=map[0];
-	/*
-	Bmp bmp(map4.sx,map4.sy,24,0);
-	memset(bmp.data,255,map4.sx*map4.sy*3);
-
-	for (int x=0;x<map4.sx;x++)
-	{
-		ushort *p = map4.slabs + map4.map[x+(map4.sz/2)*map4.sx];
-		ushort *pt = p;
-
-		uint y1=0,y2=0;
-
-		int len1 = *p; ++p;
-		int len2 = *p; ++p;
-
-		pt = pt+len1;
-		int texture = 0;
-
-		for (int s=0;s<len1;s++)
-		{
-			ushort slab = *p; ++p;
-			
-			y1+=slab&1023;
-			y2=y1+(slab>>10);
-			
-			if (y2<map4.sy)
-			{
-				for (int t=y1;t<y2;t++)
-				{
-					bmp.data[(x+t*map4.sx)*3]=
-					bmp.data[(x+t*map4.sx)*3+1]=
-					bmp.data[(x+t*map4.sx)*3+2]=0;//pt[texture+t-y1]&255;
-				}
-			}
-			texture+=y2-y1;
-			y1=y2;
-		}
-	}
-	bmp.save("rle4test.bmp");
-	*/
 	
 
 	fclose(fn);

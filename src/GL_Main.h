@@ -2,7 +2,6 @@
 #pragma once
 ////////////////////////////////////////////////////////////////////////////////
 #include "core.h"
-#include "Bmp.h"
 #include "glsl.h"
 #include <unistd.h>
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,8 +48,6 @@ struct GL_Main
 	void createFloatTexture( GLuint* tex_name, unsigned int size_x, unsigned int size_y);
 	void deleteTexture( GLuint* tex);
 	int LoadTex(const char *name,int flags=0);
-	int LoadTexBmp(Bmp &bmp,int flags=0);
-	void UpdateTexBmp(int handle, Bmp &bmp,int flags=0);
 
 	static void get_error()
 	{
@@ -155,9 +152,6 @@ class FBO {
 
 			//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0,
 			//	    GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
-			//GL_TEXTURE_2D,GL_RGBA, bmp.width, bmp.height,
-			//	/*GL_RGBA*/GL_BGRA_EXT, GL_UNSIGNED_BYTE, bmp.data );
 
 			get_error();
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

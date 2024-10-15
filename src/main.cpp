@@ -33,9 +33,7 @@ void CUT_CHECK_ERROR_GL(){};
 #include "alloc.hh"
 #include "Rle4.h"
 #include "RayMap.h"
-#include "tree.h"
 #include "GL_Main.h"
-#include "DrawUtils.h"
 // #include "../src.BestFitMem/bmalloc.h"
 ////////////////////////////////////////////////////////////////////////////////
 //extern "C" RayMap_GPU ray_map_GPU;
@@ -99,39 +97,12 @@ int main( int argc, char** argv) {
 	//while(1);;
 
 	RLE4 rle4;
-	Tree tree;
-if(0)
-{		tree.init(1024,1024,1024,false);
-		tree.set_color(1);
-//		tree.init(256,256,256);
-//		tree.init(1024,1024,1024,false);
-//		tree.loadPLY("../happy.ply");
-//		tree.loadPLY("../happy.ply");
-//		tree.loadPLY("/code/data/ply/bunny.ply");
-//		tree.loadPLY("/code/data/ply/zip/crytek-sponza/sponza.ply");
-//		tree.loadPLY("/code/data/ply/zip/lucy/lucy_ascii.ply");
-//		tree.loadPLY("/code/data/ply/happy.ply/happy.ply");
-//		tree.loadPLY("/code/data/ply/zip/dragon.ply");
-//		tree.loadPLY("/code/data/ply/xyzrgbdragon.ply");
-//		tree.loadPLY("dragon.ply");
-//		tree.loadPLY("bunny.ply");
-
-		printf("Compress.\n");
-		rle4.compress_all(tree);		
-		rle4.save("../bunny.rle4");
-//		rle4.save("spherescape_complex.rle4");
-
-		tree.exit();
-		return 0;
-}
-
 
 /*
 	rle4.loadvxl("../untitled.vxl");
 	rle4.save("voxelstein.rle4");
 	return 0;
 */	
-	printf("Init Tree.\n");
 
 	printf("Creating Scene \r");
 
@@ -178,112 +149,7 @@ if(1)
 //	MessageBoxA(0,"huhu","huhu",0);
 //	return 0;
 //
-}else{
-//		tree.load("../bucky.raw",32,32,32);
-		/*
-		if(!tree.load("../bunny.raw",512,361,512,16))
-//		if(!tree.load("../bonsai.raw",512,182,512))
-		{
-			printf("file not found\n");
-			while(1);;
-		}  */
-
-		tree.init(1024,2048,1024,false);
-		tree.set_color(1);
-//		tree.init(256,256,256);
-//		tree.init(1024,1024,1024,false);
-//		tree.loadPLY("../happy.ply");
-		tree.loadPLY("../happy.ply");
-//		tree.loadPLY("dragon.ply");
-//		tree.loadPLY("bunny.ply");
-//		tree.cube(vec3f(0,0,0),vec3f(1024,300,1024));
-//		tree.cube(vec3f(0,200,0),vec3f(256,256,256));
-
-#if 0
-		for(int i=0;i<100;i++)
-		{
-			int x=(i*26256821+1235)&1023;
-			int y=(i*i*17363643+1241)&255;
-			int z=(i*14623468+2345)&1023;
-			int d=(i*53472462+6225)&63;
-			int dx=((i*64362557+2455)&31)-15;
-			int dz=((i*76544357+7645)&31)-15;
-			int dy=(((i*65452217+5321)&31)-15);//+(sin(float(x)*2*3.1415/1024)+sin(float(z)*2*3.1415/1024))*25-50;
-
-			printf("Sphere %d	     \r",i);
-			tree.set_color(0);
-			if(x&1)tree.set_color(3);
-			tree.sphere(vec3f(x,y+800,z),d*3+30,(i<50)? 0 : 1);
-		}
-		for(int i=0;i<4;i++)
-		{
-			int x=(i*23676321+7643)&1023;
-			int y=(i*i*17365675+3567)&255;
-			int z=(i*14623468+3845)&1023;
-			int d=(i*53472367+7325)&63;
-			int dx=((i*64364326+2455)&31)-15;
-			int dz=((i*76544373+7645)&31)-15;
-			int dy=(((i*65452217+5321)&31)-15);//+(sin(float(x)*2*3.1415/1024)+sin(float(z)*2*3.1415/1024))*25-50;
-			printf("Tree %d		    \r",i);
-			tree.set_color(1);
-			tree.tree ( vec3f (x,900,z) , vec3f (x+dx,840-y+dy,z+dz) , d*2+10);
-		}
-		tree.cube(vec3f(0,900,0),vec3f(1024,1024,1024));
-#endif
-		/*
-			tree.set_color(0);
-			tree.sphere(vec3f(128,128,128),128,0);
-			tree.set_color(1);
-			tree.sphere(vec3f(0,128,128),128,0);
-			*/
-#if 0
-		for(int i=0;i<510;i++)
-		{
-			int x=(i*26256821+1235)&1023;
-			int y=(i*i*17363643+1241)&255;
-			int z=(i*14623468+2345)&1023;
-			int d=(i*53472462+6245)&15;
-			int dx=((i*64362557+2455)&31)-15;
-			int dz=((i*76544357+7645)&31)-15;
-			int dy=(((i*65452217+5321)&31)-15)+(sin(float(x)*2*3.1415/1024)+sin(float(z)*2*3.1415/1024))*25-50;
-
-			printf("Sphere %d	     \r",i);
-			tree.set_color(0);
-			if(x&1)tree.set_color(3);
-			tree.sphere(vec3f(x,950+dy,z),d*3+30);
-
-			if((i%84)==0)
-			{
-				printf("Tree %d		    \r",i);
-				tree.set_color(1);
-				tree.tree ( vec3f (x,950+dy,z) , vec3f (x+dx,940-y+dy,z+dz) , d*3+10);
-			}
-		}
-#endif		
-		
-		//tree.cube(vec3f(0,900,0),vec3f(1024,1024,1024));
-		//tree.cube(vec3f(0,100,0),vec3f(100,200,100));
-		
-  		/*
-		tree.init(256,256,256);
-		printf("Tree Sphere.\n");
-		tree.set_color(0);
-		tree.sphere(vec3f(120,120,120),80);
-		tree.set_color(1);
-		tree.sphere(vec3f(0,120,120),80);
-		tree.set_color(2);
-		tree.sphere(vec3f(120,120,0),80);
-		*/
-		
-		printf("Compress.\n");
-		rle4.compress_all(tree);		
-		rle4.save("../budda_2k.rle4");
-//		rle4.save("spherescape_complex.rle4");
-
-		tree.exit();
-		return 0;
-	}
-
+}
 	
 	/*
 	ushort* vxl = rle4.uncompress(rle4.map4);
