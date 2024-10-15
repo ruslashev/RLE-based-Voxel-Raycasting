@@ -14,10 +14,6 @@
 // #define MEM_TEXTURE
 
 // #define ANTIALIAS
-// #define WONDERLAND
-// #define BONSAI
-// #define VOXELSTEIN
-#define BUDDHA
 // #define CLIPREGION
 
 // #define NO_ROTATION

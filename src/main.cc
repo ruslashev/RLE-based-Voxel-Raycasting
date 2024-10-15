@@ -83,43 +83,19 @@ int main(int argc, char** argv)
 
 	printf("ready.\n");
 
-	screen.posx = 14447;
-	screen.posz = 15021;
-	screen.posy = -438;
-
-#ifdef VOXELSTEIN
-	screen.posx = 0 * 4414;
-	screen.posy = -185;
-	screen.posz = 0 * 4924;
-
-	screen.posx = 338;
-	screen.posy = -191;
-	screen.posz = 109;
-#endif
-
-#ifdef BUDDHA
 	screen.posx = 499;
 	screen.posy = -818;
 	screen.posz = 941;
-#endif
 
 #ifdef CLIPREGION
 	screen.posx = 0;
 	screen.posz = 0;
 #endif
 
-#ifdef WONDERLAND
-	screen.posx = 13522;
-	screen.posz = 15892;
-	screen.posy = -68; // won
-	screen.posy = -619; // won
-#endif
-
 #ifdef CLIPREGION
 	screen.posx = -632;
 	screen.posz = 512;
-#endif
-#ifndef CLIPREGION
+#else
 	screen.posx = 10000;
 	screen.posz = 10000;
 #endif
@@ -218,25 +194,9 @@ static void display_pbo()
 	if (!shader_colorize) {
 		shader_colorize = shader_manager.loadfromFile(
 #ifdef ANTIALIAS
-	#ifdef VOXELSTEIN
-				"shader/colorize_stein_soft_2xAA.vert", "shader/colorize_stein_soft_2xAA.frag"
-	#endif
-	#ifdef WONDERLAND
-				"shader/colorize_soft_2xAA.vert", "shader/colorize_soft_2xAA.frag"
-	#endif
-	#ifdef BUDDHA
-				"shader/colorize_buddha_soft_2xAA.vert", "shader/colorize_buddha_soft_2xAA.frag"
-	#endif
+			"shader/colorize_buddha_soft_2xAA.vert", "shader/colorize_buddha_soft_2xAA.frag"
 #else
-	#ifdef VOXELSTEIN
-				"shader/colorize_stein_soft.vert", "shader/colorize_stein_soft.frag"
-	#endif
-	#ifdef WONDERLAND
-				"shader/colorize_soft.vert", "shader/colorize_soft.frag"
-	#endif
-	#ifdef BUDDHA
-				"shader/colorize_buddha_soft.vert", "shader/colorize_buddha_soft.frag"
-	#endif
+			"shader/colorize_buddha_soft.vert", "shader/colorize_buddha_soft.frag"
 #endif
 		);
 	}
