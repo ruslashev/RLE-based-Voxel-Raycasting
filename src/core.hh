@@ -1,6 +1,7 @@
-#pragma once////////////////////////////////////////////////////////////////////////////////
-//#define MEM_TEXTURE
+#pragma once
+
 #include <cstdint>
+
 #define SCREEN_SIZE_X 1024
 #define SCREEN_SIZE_Y 768
 #define RENDER_SIZE 1024
@@ -10,136 +11,106 @@
 #define MIP_DISTANCE (SCREEN_SIZE_X)
 #define THREAD_COUNT 128
 
-//#define ANTIALIAS
-//#define WONDERLAND
-//#define MOUNTAINS
-//#define BONSAI
-//#define VOXELSTEIN
-#define BUDDHA
-//#define CLIPREGION
+// #define MEM_TEXTURE
 
-//#define NO_ROTATION
-//#define HEIGHT_COLOR
+// #define ANTIALIAS
+// #define WONDERLAND
+// #define MOUNTAINS
+// #define BONSAI
+// #define VOXELSTEIN
+#define BUDDHA
+// #define CLIPREGION
+
+// #define NO_ROTATION
+// #define HEIGHT_COLOR
 
 #define FLOATING_HORIZON
 #define XFLOATING_HORIZON
 
 // clipping
-//#define CENTERSEG
-
-//#define NORMALCLIP
-//#define PERPIXELFORWARD
+// #define CENTERSEG
+// #define NORMALCLIP
+// #define PERPIXELFORWARD
 #define SHAREMEMCLIP
 
-
-/*
-#define SCREEN_SIZE_X 640
-#define SCREEN_SIZE_Y 480
-#define RENDER_SIZE 1024
-#define RAYS_CASTED 4096
-*/
-
-/*
-#define SCREEN_SIZE_X 512
-#define SCREEN_SIZE_Y 512
-#define RENDER_SIZE 512
-#define RAYS_CASTED 2048
-*/
-////////////////////////////////////////////////////////////////////////////////
-/*
-#define SCREEN_SIZE_X 1024
-#define SCREEN_SIZE_Y 768
-#define RENDER_SIZE 1024
-#define RAYS_CASTED 4096
-*/
-////////////////////////////////////////////////////////////////////////////////
-#define _USE_MATH_DEFINES
 #define loop(a_l,start_l,end_l) for ( a_l = start_l;a_l<end_l;++a_l )
-#define loops(a_l,start_l,end_l,step_l) for ( a_l = start_l;a_l<end_l;a_l+=step_l )
 
-#ifndef byte
-/* #define byte unsigned char */
 typedef unsigned char byte;
-#endif
-
-#ifndef ushort
-/* #define ushort unsigned short */
 typedef unsigned short ushort;
-#endif
-
-#ifndef uint
-/* #define uint unsigned int */
 typedef unsigned int uint;
-#endif
-
-#ifndef uchar
-/* #define uchar unsigned char */
 typedef unsigned char uchar;
-#endif
 
-////////////////////////////////////////////////////////////////////////////////
-class Keyboard
+struct Keyboard
 {
-	public:
+	bool key [256]; // actual
+	bool key2[256]; // before
 
-	bool  key [256]; // actual
-	bool  key2[256]; // before
+	Keyboard()
+	{
+		int a;
+		loop(a, 0, 256)
+			key[a] = key2[a] = 0;
+	}
 
-	Keyboard(){ int a; loop(a,0,256) key[a] = key2[a]=0; }
-
-	bool KeyDn(char a)//key down
+	bool KeyDn(char a)
 	{
 		return key[a];
 	}
-	bool KeyPr(char a)//pressed
+
+	bool KeyPr(char a)
 	{
 		return ((!key2[a]) && key[a] );
 	}
-	bool KeyUp(char a)//released
+
+	bool KeyUp(char a)
 	{
 		return ((!key[a]) && key2[a] );
 	}
+
 	void update()
 	{
-		int a;loop( a,0,256 ) key2[a] = key[a];
+		int a;
+		loop(a, 0, 256)
+			key2[a] = key[a];
 	}
 };
-////////////////////////////////////////////////////////////////////////////////
-class Mouse
-{
-	public:
 
+struct Mouse
+{
 	bool  button[256];
 	bool  button2[256];
-	float mouseX,mouseY;
-	float mouseDX,mouseDY;
+	float mouseX, mouseY;
+	float mouseDX, mouseDY;
 
 	Mouse()
-	{ 
-		int a; loop(a,0,256) button[a] = button2[a]=0; 
-		mouseX=mouseY=mouseDX=mouseDY= 0;
+	{
+		int a;
+		loop(a, 0, 256)
+			button[a] = button2[a] = 0;
+		mouseX = mouseY = mouseDX = mouseDY =  0;
 	}
+
 	void update()
 	{
-		int a;loop( a,0,256 ) button2[a] = button[a];
+		int a;
+		loop(a, 0, 256)
+			button2[a] = button[a];
 	}
 };
-////////////////////////////////////////////////////////////////////////////////
-class Screen
-{
-	public:
 
-	int	 window_width;
-	int	 window_height;
+struct Screen
+{
+	int  window_width;
+	int  window_height;
 	bool fullscreen;
 
-	float posx,posy,posz;
-	float rotx,roty,rotz;
+	float posx, posy, posz;
+	float rotx, roty, rotz;
 };
-////////////////////////////////////////////////////////////////////////////////
-extern Keyboard		keyboard;
-extern Mouse		mouse;
-extern Screen		screen;
+
+extern Keyboard keyboard;
+extern Mouse    mouse;
+extern Screen   screen;
 
 extern "C" void  cpu_memcpy(void* dst, void* src, int count);
 extern "C" void  gpu_memcpy(void* dst, void* src, int count);
