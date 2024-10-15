@@ -376,8 +376,27 @@ static void compute_ray_map()
 	ray_map.get_ray_map(pos, rot);
 }
 
+static float fps_count(int diff)
+{
+	const int num = 10;
+
+	static int measurements[num] = { 0 };
+	static int idx = 0;
+	static int sum = 0;
+
+	sum -= measurements[idx];
+	sum += diff;
+	measurements[idx] = diff;
+
+	idx = (idx + 1) % num;
+
+	return (float)sum / (float)num;
+}
+
 static void display()
 {
+	int render_start = glutGet(GLUT_ELAPSED_TIME);
+
 	update_viewpoint();
 	compute_ray_map();
 
@@ -387,14 +406,17 @@ static void display()
 	display_pbo();
 	glFlush();
 
-	static float msavg = 1.0;
+	int render_end = glutGet(GLUT_ELAPSED_TIME);
+
+	float ms = fps_count(render_end - render_start);
+	float fps = 1000. / ms;
 
 	beginRenderText(screen.window_width, screen.window_height);
 	{
 		char text[100];
 		int HCOL = 0, VCOL = 5;
 		glColor3f(1.0f, 1.0f, 1.0f);
-		sprintf(text, "Total: %3.2f msec (%3.3f fps)", msavg, (1000.0f / msavg));
+		sprintf(text, "Total: %3.2f msec (%3.3f fps)", ms, fps);
 		HCOL += 15;
 		renderText(VCOL, HCOL, BITMAP_FONT_TYPE_HELVETICA_12, text);
 
