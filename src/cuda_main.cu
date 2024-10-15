@@ -330,11 +330,6 @@ struct Render
 
 		float z = 0;
 
-#ifdef CENTERSEG
-		float cache_1_start = y_clip_max;
-		float cache_1_end = y_clip_min;
-#endif
-
 		float y_map_switch = viewpos.y;
 
 		mapswitch = mapswitch * (0.25 * (4 - abs(viewrot.x)));
@@ -520,7 +515,6 @@ struct Render
 				if (scr_y1 >= y_clip_max)
 					continue;
 
-#ifndef CENTERSEG
 				if (scr_y2 >= y_clip_max) {
 					scr_y2 = y_clip_max;
 #ifdef FLOATING_HORIZON
@@ -533,80 +527,26 @@ struct Render
 					y_clip_min = scr_y2;
 #endif
 #ifdef SHAREMEMCLIP
-#ifdef XFLOATING_HORIZON
+	#ifdef XFLOATING_HORIZON
 					while ((y_clip_max > y_clip_min)
 							&& (y_cache[y_clip_min >> 5] & (1 << (y_clip_min & 31))))
 						++y_clip_min;
-#endif
+	#endif
 #endif
 				}
-#else
-				bool merged = false;
-
-				if (scr_y1 < y_clip_min) {
-					if (y_clip_min >= scr_y2)
-						continue;
-					scr_y1 = y_clip_min;
-					y_clip_min = scr_y2;
-					merged = true;
-				}
-				if (scr_y2 > y_clip_max) {
-					if (scr_y1 >= y_clip_max)
-						continue;
-					scr_y2 = y_clip_max;
-					y_clip_max = scr_y1;
-					merged = true;
-				}
-
-				///////////////////////////////////////////
-				// Culling #2 - Check center segment
-
-				bool y1gc1s = scr_y1 >= cache_1_start;
-				bool y2lc1e = scr_y2 <= cache_1_end;
-
-				if (y1gc1s && y2lc1e)
-					continue;
-
-				if (!merged)
-					if (!y1gc1s || !y2lc1e) {
-						if (scr_y1 < cache_1_start)
-							if (scr_y2 >= cache_1_start)
-								if (y2lc1e) {
-									scr_y2 = cache_1_start;
-									cache_1_start = scr_y1;
-								}
-						if (scr_y2 > cache_1_end)
-							if (scr_y1 <= cache_1_end)
-								if (y1gc1s) {
-									scr_y1 = cache_1_end;
-									cache_1_end = scr_y2;
-								}
-						if (scr_y2 - scr_y1 > cache_1_end - cache_1_start) {
-							cache_1_start = scr_y1;
-							cache_1_end = scr_y2;
-						}
-					}
-#endif
-				///////////////////////////////////////////
 				int y = scr_y1;
 
 #ifdef PERPIXELFORWARD
 				y += ofs_skip_start[y];
 				// scr_y2-=ofs_skip_start[scr_y2-1]>>16;
-#ifdef XFLOATING_HORIZON
+	#ifdef XFLOATING_HORIZON
 				y_clip_min += ofs_skip_start[y_clip_min];
-#endif
+	#endif
 				if (y >= scr_y2)
 					continue;
 #endif
+
 #ifdef SHAREMEMCLIP
-#ifdef CENTERSEG
-#ifdef XFLOATING_HORIZON
-				while ((y_clip_max > y_clip_min)
-						&& (y_cache[y_clip_min >> 5] & (1 << (y_clip_min & 31))))
-					++y_clip_min;
-#endif
-#endif
 				while ((y < scr_y2) && (y_cache[y >> 5] & (1 << (y & 31))))
 					++y;
 				if (y >= scr_y2)

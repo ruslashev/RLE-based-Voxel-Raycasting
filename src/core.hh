@@ -26,7 +26,6 @@
 #define XFLOATING_HORIZON
 
 // clipping
-// #define CENTERSEG
 // #define PERPIXELFORWARD
 #define SHAREMEMCLIP
 
