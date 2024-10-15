@@ -21,7 +21,6 @@
 // #define CLIPREGION
 
 // #define NO_ROTATION
-// #define HEIGHT_COLOR
 
 #define FLOATING_HORIZON
 #define XFLOATING_HORIZON

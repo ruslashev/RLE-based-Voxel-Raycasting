@@ -641,9 +641,6 @@ struct Render
 				int iskip_add = ofs_skip_start[scr_y1];
 				int sa = 0;
 #endif
-#ifdef HEIGHT_COLOR
-				int height_color = 4095;
-#endif
 
 				float mult = y + 1 - scr_y1r;
 				float uz = u1z + u2dz * mult;
@@ -686,13 +683,6 @@ struct Render
 					uint color16 = send[u];
 #endif
 
-#ifdef HEIGHT_COLOR
-					ushort colorpal = color16 & 0xff00;
-					color16 = min(max((color16 & 0xff) * height_color >> 12, 0), 255);
-					// if(color16<0)color16=0;
-					// if(color16>255)color16=255;
-					color16 |= colorpal;
-#endif
 					((uint*)ofs_rgb_start)[y]
 						= color16 + (real_z << 16); //+(real_z<<16);//depth;//send[uint(u)]
 #ifdef PERPIXELFORWARD
