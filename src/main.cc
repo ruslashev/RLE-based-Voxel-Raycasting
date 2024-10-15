@@ -16,6 +16,7 @@ RayMap   ray_map;
 Keyboard keyboard;
 Mouse    mouse;
 Screen   screen;
+intptr_t cpu_to_gpu_delta;
 
 static void display();
 
