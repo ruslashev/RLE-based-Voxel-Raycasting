@@ -55,36 +55,6 @@ struct RayMap : public RayMap_GPU
 		map_line_limit = a;
 	}
 
-	float LineScale(vec3f input, vec3f center)
-	{
-		float scale_x = 1;
-		float scale_y = 1;
-
-		if (center.x > 1) scale_x = (1 - input.x) / (center.x - input.x);
-		if (center.x < 0) scale_x = input.x / (input.x - center.x);
-		if (center.y > clip_max) scale_y = (clip_max - input.y) / (center.y - input.y);
-		if (center.y < clip_min) scale_y = (-clip_min + input.y) / (input.y - center.y);
-
-		float scale = (scale_x < scale_y) ? scale_x : scale_y;
-
-		return scale;
-	}
-
-	inline void ClipLine(vec3f& p1, vec3f& p2)
-	{
-		vec3f c1 = p1;
-		vec3f c2 = p2;
-		float scale;
-
-		scale = LineScale(p1, p2);
-		c2 = p1 + (p2 - p1) * scale;
-		scale = LineScale(p2, p1);
-		c1 = p2 + (p1 - p2) * scale;
-
-		p1 = c1;
-		p2 = c2;
-	}
-
 	void get_ray_map(vec3f pos, vec3f rot)
 	{
 		// Define frustum & origin
