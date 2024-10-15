@@ -19,7 +19,7 @@ void main(void)
    float scx = gl_FragCoord.x/RESX;
    float scy = gl_FragCoord.y/RESY;
    
-   float border=(RESX-RESY)/(RESX*2);
+   float border=(RESX-RESY)/(RESX*2.);
    
    float scx1= scx-vanish.x;
    float scy1= scy-vanish.y;
@@ -28,29 +28,31 @@ void main(void)
    float left  = step(scx1,0.0);
    float ostep = step(abs(scy1)-abs(scx1)*RESX/RESY,0.0);
 
-   float seg_up =  (1-upper)*(1-ostep);
-   float seg_dn =  (  upper)*(1-ostep);
-   float seg_rt =  (1-left )*(  ostep);
-   float seg_lt =  (  left )*(  ostep);
+   float seg_up =  (1.-upper)*(1.-ostep);
+   float seg_dn =  (   upper)*(1.-ostep);
+   float seg_rt =  (1.-left )*(   ostep);
+   float seg_lt =  (   left )*(   ostep);
 
-   float o2 = (ostep*gl_FragCoord.x+(1-ostep)*gl_FragCoord.y)/RESX;
+   float o2 = (ostep*gl_FragCoord.x+(1.-ostep)*gl_FragCoord.y)/RESX;
    
-   float ang2=scx1*abs(1-step(scy1,0.0)-vanish.y)/scy1+
-		step(scy1,0.0)    *(1-vanish.x)+
-		(1-step(scy1,0.0))*(vanish.x);
-		
-   float ang3=scy1*abs(1-step(scx1,0.0)-vanish.x)/scx1+
-		step(scx1,0.0)    *(1-vanish.y)+
-		(1-step(scx1,0.0))*(vanish.y);
+   float ang2 =
+		scx1 * abs(1. - step(scy1, 0.) - vanish.y) / scy1 +
+		step(scy1, 0.)        * (1. - vanish.x) +
+		(1. - step(scy1, 0.)) * (vanish.x);
 
-   ang3= ang3*RESY/RESX+border;
+	float ang3 =
+		scy1 * abs(1. - step(scx1, 0.) - vanish.x) / scx1 +
+		step(scx1, 0.)        * (1. - vanish.y) +
+		(1. - step(scx1, 0.)) * (vanish.y);
+
+	ang3 = ang3*RESY/RESX+border;
    
    //X
    //texpos.y=(ofs_add.x+1.0-(ang3*ostep*RESY/RESX+ang2*(1-ostep)))*0.25; // 0
    //texpos.y=(ofs_add.y+ang3*ostep*RESY/RESX+ang2*(1-ostep))*0.25;
 
 //   float x_pre = (ang3*ostep*RESY/RESX+ang2*(1-ostep)) ;
-   float x_pre = (ostep*ang3+ang2*(1-ostep)) ;
+   float x_pre = (ostep*ang3+ang2*(1.-ostep)) ;
 
 
    texpos.y=  seg_dn * ( ofs_add.y+    x_pre ) + 
@@ -95,7 +97,7 @@ vec4 c = texture2D(texDecal,texpos);//*0.5+
 		vec3 nrm; 
 		nrm.x=c.r;//*1.0-0.0;//col16r;
 		nrm.y=c.g;//*1.0-0.0;//col16g;
-		//nrm.z=min(1.0,nrm.x+nrm.y);//*1.0-0.0;//col16g;
+		nrm.z=min(1.0,nrm.x+nrm.y);//*1.0-0.0;//col16g;
 		
 		nrm = 2.0 * nrm - vec3(1.0,1.0,1.0);
 		nrm.z=sqrt(1.0-c.r*c.r-c.g*c.g);//col16b;
