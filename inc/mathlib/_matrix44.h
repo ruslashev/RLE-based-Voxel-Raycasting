@@ -9,11 +9,11 @@
 
     (C) 2002 RadonLabs GmbH
 */
-#include "mathlib/_vector4.h"
-#include "mathlib/_vector3.h"
-#include "mathlib/quaternion.h"
-#include "mathlib/euler.h"
-#include "mathlib/matrixdefs.h"
+#include "_vector4.h"
+#include "_vector3.h"
+#include "quaternion.h"
+#include "euler.h"
+#include "matrixdefs.h"
 
 static float _matrix44_ident[16] = 
 {

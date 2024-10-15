@@ -9,7 +9,7 @@
 
     (C) 2002 RadonLabs GmbH
 */
-#include "mathlib/nmath.h"
+#include "nmath.h"
 #include <float.h>
 
 //------------------------------------------------------------------------------

@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "mathlib/vector.h"
+#include "vector.h"
 
 //-------------------------------------------------------------------
 //  quaternion

@@ -9,9 +9,9 @@
 
     (C) 2002 RadonLabs GmbH
 */
-#include "mathlib/_vector3.h"
-#include "mathlib/quaternion.h"
-#include "mathlib/euler.h"
+#include "_vector3.h"
+#include "quaternion.h"
+#include "euler.h"
 #include "matrixdefs.h"
 #include <memory.h>
 
