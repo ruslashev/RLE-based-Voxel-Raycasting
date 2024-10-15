@@ -146,6 +146,8 @@ extern "C" void  gpu_memcpy(void* dst, void* src, int count);
 extern "C" void* gpu_malloc(int size);
 extern "C" void  create_cuda_1d_texture(char* data32, int size);
 extern "C" void  create_cuda_2d_texture(uint* data64, int width,int height);
+extern "C" void  pboRegister(int pbo);
+extern "C" void  pboUnregister(int pbo);
 
 struct RayMap_GPU;
 extern "C" void  cuda_main_render2(int pbo_out, int width, int height, RayMap_GPU* raymap);
