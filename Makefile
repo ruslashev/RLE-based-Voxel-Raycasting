@@ -10,6 +10,8 @@ src = \
       RLE-Raycaster/src/glsl.cpp \
       RLE-Raycaster/src/main.cpp
 
+obj = $(src:RLE-Raycaster/src/%.cpp=obj/%.o) obj/Cuda_Main.o
+
 cflags = \
          -I ./RLE-Raycaster/inc \
          -I ./RLE-Raycaster/src \
@@ -18,20 +20,30 @@ cflags = \
          -g \
          -w
 
-lflags = -lglut -lGLEW -lGL ./Cuda_Main.o -L /usr/local/cuda-11.8/targets/x86_64-linux/lib -lcudart
+lflags = -lglut -lGLEW -lGL -L /usr/local/cuda-11.8/targets/x86_64-linux/lib -lcudart
+
+nflags = -I ./RLE-Raycaster/inc -ccbin g++-11 -w -Xptxas -fastimul --maxrregcount=64 --use_fast_math -lineinfo
 
 cxx = g++
 
-all: main
-	./main
+bin = main
 
-main: Cuda_Main.o $(src)
-	@echo g++ $@
-	@$(cxx) $(cflags) $(src) -o main $(lflags)
+all: $(bin)
+	./$(bin)
 
-Cuda_Main.o: ./RLE-Raycaster/src/Cuda_Main.cu
+$(bin): $(obj)
+	@echo ld $@
+	@$(cxx) $^ -o $@    $(lflags)
+
+obj/%.o: RLE-Raycaster/src/%.cpp
+	@echo cxx $<
+	@mkdir -p $(@D)
+	@$(cxx) $^ -o $@ -c $(cflags)
+
+obj/Cuda_Main.o: RLE-Raycaster/src/Cuda_Main.cu
 	@echo nvcc $^
-	@nvcc $^ -c -I RLE-Raycaster/inc -ccbin g++-11 -w -Xptxas -fastimul --maxrregcount=64 --use_fast_math 
+	@mkdir -p $(@D)
+	@nvcc   $^ -o $@ -c $(nflags)
 
 clean:
-	rm -f Cuda_Main.o main
+	rm -rf obj
