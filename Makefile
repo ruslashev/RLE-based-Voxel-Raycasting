@@ -1,4 +1,5 @@
 src = \
+      RLE-Raycaster/src/alloc.cpp \
       RLE-Raycaster/src/Bmp.cpp \
       RLE-Raycaster/src/Core.cpp \
       RLE-Raycaster/src/DrawUtils.cpp \
