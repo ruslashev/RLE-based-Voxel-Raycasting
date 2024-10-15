@@ -1,5 +1,5 @@
 #pragma once
-#include "core.h"
+#include "core.hh"
 
 extern "C" void create_cuda_1d_texture(char* data32, int size);
 extern "C" void create_cuda_2d_texture(uint* data64, int width,int height);

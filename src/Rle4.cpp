@@ -1,6 +1,6 @@
 // #include <windows.h>
 /*------------------------------------------------------*/
-#include "Rle4.h"
+#include "Rle4.hh"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>

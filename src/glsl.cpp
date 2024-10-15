@@ -6,7 +6,7 @@ License: BSD
 (c) 2003-2005 by Martin Christen. All Rights reserved.
 *********************************************************************/
 
-#include "glsl.h"
+#include "glsl.hh"
 #include <cstring>
 #include <unistd.h>
 //#include <Cg/cg.h>    /* Can't include this?  Is Cg Toolkit installed! */
