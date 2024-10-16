@@ -1,11 +1,5 @@
 #pragma once
 
-#include <math.h>
-
-#ifndef vec3i
-struct vec3i { int x, y, z; };
-#endif
-
 #include "../inc/mathlib/vector.h"
 
 struct vec3f

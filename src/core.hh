@@ -2,6 +2,12 @@
 
 #include <cstdint>
 
+#ifdef IN_CUDA_ENV
+  typedef float3 vec3f;
+#else
+  #include "vec_math.hh"
+#endif
+
 #define SCREEN_SIZE_X 1024
 #define SCREEN_SIZE_Y 768
 #define RENDER_SIZE 1024
@@ -93,8 +99,8 @@ struct Screen
 	int  window_height;
 	bool fullscreen;
 
-	float posx, posy, posz;
-	float rotx, roty, rotz;
+	vec3f pos;
+	vec3f rot;
 };
 
 extern Keyboard keyboard;

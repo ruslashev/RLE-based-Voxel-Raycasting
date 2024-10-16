@@ -79,21 +79,14 @@ int main(int argc, char** argv)
 
 	printf("ready.\n");
 
-	screen.posx = 499;
-	screen.posy = -818;
-	screen.posz = 941;
+	screen.pos = vec3f(499, -818, 941);
 
 #ifdef CLIPREGION
-	screen.posx = 0;
-	screen.posz = 0;
-#endif
-
-#ifdef CLIPREGION
-	screen.posx = -632;
-	screen.posz = 512;
+	screen.pos.x = -632;
+	screen.pos.z = 512;
 #else
-	screen.posx = 10000;
-	screen.posz = 10000;
+	screen.pos.x = 10000;
+	screen.pos.z = 10000;
 #endif
 
 	gl_main.Init(SCREEN_SIZE_X, SCREEN_SIZE_Y, false, display);
@@ -109,28 +102,28 @@ static void update_viewpoint()
 	static float multiplier = 0.125f;
 	float step = float(delta) * multiplier;
 
-	screen.rotx = screen.rotx * 0.9 + 0.1 * ((mouse.mouseY - 0.5) * 10 + 0.01);
-	screen.roty = screen.roty * 0.9 + 0.1 * ((mouse.mouseX - 0.5) * 10 + 0.01 + M_PI / 2);
+	screen.rot.x = screen.rot.x * 0.9 + 0.1 * ((mouse.mouseY - 0.5) * 10 + 0.01);
+	screen.rot.y = screen.rot.y * 0.9 + 0.1 * ((mouse.mouseX - 0.5) * 10 + 0.01 + M_PI / 2);
 
 #ifdef NO_ROTATION
 	screen.rotx = 0.01;
 	screen.roty = 0.01 + M_PI / 2;
 #endif
 
-	if (screen.rotx > M_PI - 0.01)
-		screen.rotx = M_PI - 0.01;
-	if (screen.rotx < -M_PI + 0.01)
-		screen.rotx = -M_PI + 0.01;
+	if (screen.rot.x > M_PI - 0.01)
+		screen.rot.x = M_PI - 0.01;
+	if (screen.rot.x < -M_PI + 0.01)
+		screen.rot.x = -M_PI + 0.01;
 
 	// Direction matrix
 	matrix44 m;
 	m.ident();
-	m.rotate_z(-screen.rotz);
-	m.rotate_x(-screen.rotx);
-	m.rotate_y(-screen.roty);
+	m.rotate_z(-screen.rot.z);
+	m.rotate_x(-screen.rot.x);
+	m.rotate_y(-screen.rot.y);
 
 	// Transform direction vector
-	static vec3f pos(screen.posx, screen.posy, screen.posz);
+	static vec3f pos = screen.pos;
 	vec3f forward = m * vec3f(0, 0, -step).v3();
 	vec3f side    = m * vec3f(-step, 0, 0).v3();
 	vec3f updown  = m * vec3f(0, -step, 0).v3();
@@ -145,9 +138,7 @@ static void update_viewpoint()
 	if (keyboard.KeyPr(43)) multiplier *= 2;
 	if (keyboard.KeyPr(45)) if (multiplier > 0.01) multiplier /= 2;
 
-	screen.posx = screen.posx * 0.9 + 0.1 * pos.x;
-	screen.posy = screen.posy * 0.9 + 0.1 * pos.y;
-	screen.posz = screen.posz * 0.9 + 0.1 * pos.z;
+	screen.pos = screen.pos * 0.9 + pos * 0.1f;
 }
 
 static void render_to_pbo()
@@ -228,7 +219,7 @@ static void display_pbo()
 	float ofs2 = 4 * float(ray_map.res[1]) / float(RAYS_CASTED_RES) + ofs1;
 	float ofs3 = 4 * float(ray_map.res[2]) / float(RAYS_CASTED_RES) + ofs2;
 
-	shader_colorize->setUniform1f("rot_x_greater_zero", (screen.rotx > 0) ? 1 : 0);
+	shader_colorize->setUniform1f("rot_x_greater_zero", (screen.rot.x > 0) ? 1 : 0);
 
 	shader_colorize->setUniform4f("ofs_add",
 			-ray_map.p_ofs_min[0],
@@ -298,15 +289,9 @@ static void display_pbo()
 
 static void compute_ray_map()
 {
-	vec3f pos(screen.posx, screen.posy, screen.posz);
-	vec3f rot(screen.rotx, screen.roty, screen.rotz);
-
-	// ray_map.set_border(0.5 * (float(SCREEN_SIZE_X) / float(SCREEN_SIZE_Y) - 1.0f));
-	ray_map.set_border(0.125); // todo sven
-	// ray_map.set_border(0.5 * (float(screen.window_width - screen.window_height) / float(screen.window_width)));
-
+	ray_map.set_border(0.125);
 	ray_map.set_ray_limit(RAYS_CASTED_RES);
-	ray_map.get_ray_map(pos, rot);
+	ray_map.get_ray_map(screen.pos, screen.rot);
 }
 
 static float fps_count(int diff)
