@@ -13,7 +13,7 @@ void main(void)
 	float radavg=col.w;
 
 	// Seek min/max/avg depth
-	for( float a=0; a < 3.1415*2.0 ; a+= 3.1415*1.9/6.0 )
+	for( float a=0.; a < 3.1415*2.0 ; a+= 3.1415*1.9/6.0 )
 	{
 		vec2 coord= vec2( sin(a)*0.005 , cos(a)*0.005 )+texCoord;
 		float w=texture2D(texDecal,coord).w;

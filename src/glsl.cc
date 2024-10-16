@@ -148,12 +148,7 @@ const char* glShader::getLinkerLog(void)
 		check_gl_err();
 	}
 
-	if (linker_log != 0)
-		return (const char*)linker_log;
-	else
-		return aGLSLStrings[5];
-
-	return aGLSLStrings[4];
+	return linker_log;
 }
 
 void glShader::begin(void)
@@ -636,12 +631,7 @@ const char* glShaderObject::getCompilerLog(void)
 		check_gl_err();
 	}
 
-	if (compiler_log != 0)
-		return (char*)compiler_log;
-	else
-		return aGLSLStrings[6];
-
-	return aGLSLStrings[4];
+    return compiler_log;
 }
 
 bool glShaderObject::compile(void)
@@ -709,6 +699,8 @@ glShader* glShaderManager::loadfromFile(const char* vertexFile, const char* frag
 	aVertexShader* tVertexShader = new aVertexShader;
 	aFragmentShader* tFragmentShader = new aFragmentShader;
 
+	const char *log;
+
 	if (vertexFile != 0)
 		if (tVertexShader->load(vertexFile) != 0) {
 			cout << "error: can't load vertex shader!\n";
@@ -729,7 +721,7 @@ glShader* glShaderManager::loadfromFile(const char* vertexFile, const char* frag
 
 	if (vertexFile != 0)
 		if (!tVertexShader->compile()) {
-			cout << "***COMPILER ERROR (Vertex Shader):\n";
+			cout << "*** COMPILER ERROR (Vertex Shader):\n";
 			cout << tVertexShader->getCompilerLog() << endl;
 			delete o;
 			delete tVertexShader;
@@ -737,12 +729,14 @@ glShader* glShaderManager::loadfromFile(const char* vertexFile, const char* frag
 			return 0;
 		}
 
-	cout << "***GLSL Compiler Log (Vertex Shader):\n";
-	cout << tVertexShader->getCompilerLog() << "\n";
+	if ((log = tVertexShader->getCompilerLog()) != NULL) {
+		cout << "*** GLSL Compiler Log (Vertex Shader):\n";
+		cout << log << "\n";
+	}
 
 	if (fragmentFile != 0)
 		if (!tFragmentShader->compile()) {
-			cout << "***COMPILER ERROR (Fragment Shader):\n";
+			cout << "*** COMPILER ERROR (Fragment Shader):\n";
 			cout << tFragmentShader->getCompilerLog() << endl;
 
 			delete o;
@@ -751,8 +745,10 @@ glShader* glShaderManager::loadfromFile(const char* vertexFile, const char* frag
 			return 0;
 		}
 
-	cout << "***GLSL Compiler Log (Fragment Shader):\n";
-	cout << tFragmentShader->getCompilerLog() << "\n";
+	if ((log = tFragmentShader->getCompilerLog()) != NULL) {
+		cout << "*** GLSL Compiler Log (Fragment Shader):\n";
+		cout << log << "\n";
+	}
 
 	// Add to object
 	if (vertexFile != 0)
@@ -762,7 +758,7 @@ glShader* glShaderManager::loadfromFile(const char* vertexFile, const char* frag
 		o->addShader(tFragmentShader);
 
 	if (!o->link()) {
-		cout << "**LINKER ERROR\n";
+		cout << "*** LINKER ERROR\n";
 		cout << o->getLinkerLog() << endl;
 		delete o;
 		delete tVertexShader;
@@ -770,8 +766,10 @@ glShader* glShaderManager::loadfromFile(const char* vertexFile, const char* frag
 		return 0;
 	}
 
-	cout << "***GLSL Linker Log:\n";
-	cout << o->getLinkerLog() << endl;
+	if ((log = o->getLinkerLog()) != NULL) {
+		cout << "*** GLSL Linker Log:\n";
+		cout << log << endl;
+	}
 
 	_shaderObjectList.push_back(o);
 	o->manageMemory();
@@ -786,6 +784,8 @@ glShader* glShaderManager::loadfromMemory(const char* vertexMem, const char* fra
 	aVertexShader* tVertexShader = new aVertexShader;
 	aFragmentShader* tFragmentShader = new aFragmentShader;
 
+	const char *log;
+
 	// get vertex program
 	if (vertexMem != 0)
 		tVertexShader->loadFromMemory(vertexMem);
@@ -797,7 +797,7 @@ glShader* glShaderManager::loadfromMemory(const char* vertexMem, const char* fra
 	// Compile vertex program
 	if (vertexMem != 0)
 		if (!tVertexShader->compile()) {
-			cout << "***COMPILER ERROR (Vertex Shader):\n";
+			cout << "*** COMPILER ERROR (Vertex Shader):\n";
 			cout << tVertexShader->getCompilerLog() << endl;
 			delete o;
 			delete tVertexShader;
@@ -805,13 +805,15 @@ glShader* glShaderManager::loadfromMemory(const char* vertexMem, const char* fra
 			return 0;
 		}
 
-	cout << "***GLSL Compiler Log (Vertex Shader):\n";
-	cout << tVertexShader->getCompilerLog() << "\n";
+	if ((log = tVertexShader->getCompilerLog()) != NULL) {
+		cout << "*** GLSL Compiler Log (Vertex Shader):\n";
+		cout << log << "\n";
+	}
 
 	// Compile fragment program
 	if (fragmentMem != 0)
 		if (!tFragmentShader->compile()) {
-			cout << "***COMPILER ERROR (Fragment Shader):\n";
+			cout << "*** COMPILER ERROR (Fragment Shader):\n";
 			cout << tFragmentShader->getCompilerLog() << endl;
 
 			delete o;
@@ -820,8 +822,10 @@ glShader* glShaderManager::loadfromMemory(const char* vertexMem, const char* fra
 			return 0;
 		}
 
-	cout << "***GLSL Compiler Log (Fragment Shader):\n";
-	cout << tFragmentShader->getCompilerLog() << "\n";
+	if ((log = tFragmentShader->getCompilerLog()) != NULL) {
+		cout << "*** GLSL Compiler Log (Fragment Shader):\n";
+		cout << log << "\n";
+	}
 
 	// Add to object
 	if (vertexMem != 0)
@@ -831,15 +835,18 @@ glShader* glShaderManager::loadfromMemory(const char* vertexMem, const char* fra
 
 	// link
 	if (!o->link()) {
-		cout << "**LINKER ERROR\n";
+		cout << "*** LINKER ERROR\n";
 		cout << o->getLinkerLog() << endl;
 		delete o;
 		delete tVertexShader;
 		delete tFragmentShader;
 		return 0;
 	}
-	cout << "***GLSL Linker Log:\n";
-	cout << o->getLinkerLog() << endl;
+
+	if ((log = o->getLinkerLog()) != NULL) {
+		cout << "*** GLSL Linker Log:\n";
+		cout << log << endl;
+	}
 
 	_shaderObjectList.push_back(o);
 	o->manageMemory();
