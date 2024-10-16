@@ -507,7 +507,7 @@ unsigned long getFileLength(ifstream& file)
 
 int glShaderObject::load(const char* filename)
 {
-	printf("Loading Shader %s ...\n", filename);
+	printf("Loading Shader %s...\n", filename);
 
 	ifstream file;
 	file.open(filename, ios::in);
@@ -530,8 +530,6 @@ int glShaderObject::load(const char* filename)
 		return -3; // can't reserve memory
 
 	_memalloc = true;
-
-	printf("Loading Shader %s ...\n", filename);
 
 	// len isn't always strlen cause some characters are stripped in ascii
 	// read... it is important to 0-terminate the real length later, len is

@@ -26,42 +26,15 @@ static GLuint tex_screen = -2;
 static GLuint pbo_dest = -2;
 static int cuda_time = 0;
 
-static void* alligned_alloc_zeroed_cpu(size_t sz)
-{
-	void* ptr = malloc(sz + 16);
-
-	if (!ptr) {
-		printf("failed to alloc %zu B\n", sz);
-		exit(1);
-	}
-
-	memset(ptr, 0, sz + 16);
-
-	uintptr_t addr = (uintptr_t)ptr;
-	uintptr_t aligned = (addr + 16) & 0xfffffffffffffff0;
-
-	return (void*)aligned;
-}
-
-static void* aligned_alloc_gpu(size_t sz)
-{
-	void* ptr = gpu_malloc(sz + 16);
-	uintptr_t addr = (uintptr_t)ptr;
-	uintptr_t aligned = (addr + 16) & 0xfffffffffffffff0;
-
-	return (void*)aligned;
-}
-
 int main(int argc, char** argv)
 {
-	int pool_size = 300 * 1024 * 1024;
-	char* pool     = (char*)alligned_alloc_zeroed_cpu(pool_size);
-	char* pool_gpu = (char*)aligned_alloc_gpu(pool_size);
+	int pool_size  = 300 * 1024 * 1024;
+	char* pool     = alligned_alloc_zeroed_cpu(pool_size);
+	char* pool_gpu = aligned_alloc_gpu(pool_size);
+
 	cpu_to_gpu_delta = ((intptr_t)pool_gpu - (intptr_t)pool) & 0xfffffffffffffff0;
 
 	arena_init(pool, pool_size);
-
-	printf("pool: %p\n", pool);
 
 	RLE4 rle4;
 
@@ -79,14 +52,11 @@ int main(int argc, char** argv)
 
 	printf("ready.\n");
 
-	screen.pos = vec3f(499, -818, 941);
+	screen.pos = vec3f(10000, -818, 10000);
 
 #ifdef CLIPREGION
 	screen.pos.x = -632;
 	screen.pos.z = 512;
-#else
-	screen.pos.x = 10000;
-	screen.pos.z = 10000;
 #endif
 
 	gl_main.Init(SCREEN_SIZE_X, SCREEN_SIZE_Y, false, display);

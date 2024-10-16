@@ -25,18 +25,6 @@ void RLE4::clear()
 	init();
 }
 
-static void* malloc_check(size_t sz)
-{
-	void* ptr = malloc(sz);
-
-	if (!ptr) {
-		printf("failed to malloc %zu B\n", sz);
-		exit(1);
-	}
-
-	return ptr;
-}
-
 bool RLE4::load(const char* filename)
 {
 	FILE* fn;

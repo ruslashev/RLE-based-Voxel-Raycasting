@@ -1,4 +1,5 @@
 #include "alloc.hh"
+#include "core.hh"
 
 #include <cstdint>
 #include <cstdio>
@@ -33,4 +34,42 @@ void* arena_alloc(arena* a, ptrdiff_t size, ptrdiff_t align, ptrdiff_t count)
 void* bmalloc(ptrdiff_t size)
 {
 	return arena_alloc(&a, size, 16, 1);
+}
+
+char* alligned_alloc_zeroed_cpu(size_t sz)
+{
+	void* ptr = malloc(sz + 16);
+
+	if (!ptr) {
+		printf("failed to alloc %zu B\n", sz);
+		exit(1);
+	}
+
+	memset(ptr, 0, sz + 16);
+
+	uintptr_t addr = (uintptr_t)ptr;
+	uintptr_t aligned = (addr + 16) & 0xfffffffffffffff0;
+
+	return (char*)aligned;
+}
+
+char* aligned_alloc_gpu(size_t sz)
+{
+	void* ptr = gpu_malloc(sz + 16);
+	uintptr_t addr = (uintptr_t)ptr;
+	uintptr_t aligned = (addr + 16) & 0xfffffffffffffff0;
+
+	return (char*)aligned;
+}
+
+void* malloc_check(size_t sz)
+{
+	void* ptr = malloc(sz);
+
+	if (!ptr) {
+		printf("failed to malloc %zu B\n", sz);
+		exit(1);
+	}
+
+	return ptr;
 }
