@@ -104,11 +104,8 @@ extern Screen   screen;
 struct RayMap_GPU;
 
 extern "C" {
-	extern void  cpu_memcpy(void* dst, void* src, int count);
 	extern void  gpu_memcpy(void* dst, void* src, int count);
 	extern void* gpu_malloc(int size);
-	extern void  cuda_create_1d_texture(char* data32, int size);
-	extern void  cuda_create_2d_texture(uint* data64, int width,int height);
 	extern void  cuda_pbo_register(int pbo);
 	extern void  cuda_pbo_unregister(int pbo);
 	extern void  cuda_main_render2(int pbo_out, int width, int height, RayMap_GPU* raymap);

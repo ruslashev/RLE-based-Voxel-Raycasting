@@ -90,24 +90,6 @@ struct Render
 		v.z = zz;
 	}
 
-	inline __device__ void vec3f_normalize(vec3f& v)
-	{
-		float square = v.x * v.x + v.y * v.y + v.z * v.z;
-
-		if (square <= 0.00001f) {
-			v.x = 1;
-			v.y = 0;
-			v.z = 0;
-			return;
-		}
-
-		float len = 1.0 / (float)sqrt(square);
-
-		v.x *= len;
-		v.y *= len;
-		v.z *= len;
-	}
-
 	inline __device__ void render_line(
 			int x,
 			unsigned int* y_cache,
@@ -134,8 +116,6 @@ struct Render
 		vec3f ml_end3d;
 		bool ml_direction_y;
 
-		// if(0)
-		// if(x>=ray_map.res[0]/2)
 		{
 			int rays[4];
 			rays[0] = ray_map.res[0];
@@ -611,55 +591,10 @@ struct Render
 	}
 };
 
-void cuda_create_1d_texture(char* h_data, int size)
-{
-	int d_size = ((size >> 8) + 1) << 8;
-	uint* d_octree;
-
-	CUDA_SAFE_CALL(cudaMalloc((void**)&d_octree, d_size));
-	CUDA_SAFE_CALL(cudaMemcpy((void*)d_octree, (void*)h_data, size, cudaMemcpyHostToDevice));
-	cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(16, 0, 0, 0, cudaChannelFormatKindUnsigned);
-
-	texture_slabs.addressMode[0] = cudaAddressModeClamp;
-	texture_slabs.addressMode[1] = cudaAddressModeClamp;
-	texture_slabs.addressMode[2] = cudaAddressModeClamp;
-	texture_slabs.filterMode = cudaFilterModePoint;
-	texture_slabs.normalized = false;
-
-	CUDA_SAFE_CALL(cudaBindTexture(0, texture_slabs, d_octree, channelDesc));
-}
-
-void cuda_create_2d_texture(uint* h_data, int width, int height)
-{
-	// Allocate CUDA array in device memory
-	channelDesc_pointermap = cudaCreateChannelDesc(32, 32, 0, 0, cudaChannelFormatKindUnsigned);
-
-	cudaMallocArray(&cu_array_pointermap, &channelDesc_pointermap, width, height);
-
-	// Copy to device memory some data located at address h_data in host memory
-	cudaMemcpyToArray(cu_array_pointermap, 0, 0, h_data, width * height * 8, cudaMemcpyHostToDevice);
-
-	// Set texture parameters
-	texture_pointermap.addressMode[0] = cudaAddressModeClamp;
-	texture_pointermap.addressMode[1] = cudaAddressModeClamp;
-	texture_pointermap.addressMode[2] = cudaAddressModeClamp;
-	texture_pointermap.filterMode = cudaFilterModePoint;
-	texture_pointermap.normalized = false;
-
-	// Bind the array to the texture
-	cudaBindTextureToArray(texture_pointermap, cu_array_pointermap, channelDesc_pointermap);
-}
-
 void gpu_memcpy(void* dst, void* src, int size)
 {
 	CUDA_SAFE_CALL(cudaMemcpy(dst, src, size, cudaMemcpyHostToDevice));
 	CUT_CHECK_ERROR("cudaMemcpy cudaMemcpyHostToDevice failed");
-}
-
-void cpu_memcpy(void* dst, void* src, int size)
-{
-	CUDA_SAFE_CALL(cudaMemcpy(dst, src, size, cudaMemcpyDeviceToHost));
-	CUT_CHECK_ERROR("cudaMemcpy cudaMemcpyDeviceToHost failed");
 }
 
 void* gpu_malloc(int size)
