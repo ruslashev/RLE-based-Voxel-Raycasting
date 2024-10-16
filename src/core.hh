@@ -108,14 +108,14 @@ extern Keyboard keyboard;
 extern Mouse    mouse;
 extern Screen   screen;
 
-struct RayMap_GPU;
+struct RayMap;
 
 extern "C" {
 	extern void  gpu_memcpy(void* dst, void* src, int count);
 	extern void* gpu_malloc(int size);
 	extern void  cuda_pbo_register(int pbo);
 	extern void  cuda_pbo_unregister(int pbo);
-	extern void  cuda_main_render2(int pbo_out, int width, int height, RayMap_GPU* raymap);
+	extern void  cuda_main_render2(int pbo_out, int width, int height, RayMap* raymap);
 
 	extern intptr_t cpu_to_gpu_delta;
 };

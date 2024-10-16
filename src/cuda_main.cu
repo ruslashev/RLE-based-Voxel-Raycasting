@@ -25,7 +25,7 @@ cudaChannelFormatDesc channelDesc_pointermap;
 
 struct Render
 {
-	RayMap_GPU ray_map;
+	RayMap ray_map;
 	int res_x, res_y;
 	int* data_rgb;
 
@@ -40,9 +40,9 @@ struct Render
 		}
 	}
 
-	void set_raymap(RayMap_GPU* raymap)
+	void set_raymap(RayMap* raymap)
 	{
-		memcpy(&ray_map, raymap, sizeof(RayMap_GPU));
+		memcpy(&ray_map, raymap, sizeof(RayMap));
 	}
 
 	inline __device__ float LineScale(vec3f input, vec3f center, float clip_max, float clip_min)
@@ -643,7 +643,7 @@ __global__ void cuda_render(
 	return;
 }
 
-void cuda_main_render2(int pbo_out, int width, int height, RayMap_GPU* raymap)
+void cuda_main_render2(int pbo_out, int width, int height, RayMap* raymap)
 {
 	if (pbo_out == 0)
 		return;

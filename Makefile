@@ -1,6 +1,7 @@
 src = \
       src/alloc.cc \
       src/gl_main.cc \
+      src/ray_map.cc \
       src/rle4.cc \
       src/glsl.cc \
       src/main.cc
