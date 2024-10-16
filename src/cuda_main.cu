@@ -451,11 +451,11 @@ struct Render
 			sti_general = 0;
 			sti_skip = 0;
 
-			uint slabs1 = (uint)slabs;
+			uintptr_t slabs1 = (uintptr_t)slabs;
 
 #pragma unroll 2
 			for (; slabs < send; ++slabs) {
-				if (uint(slabs) > slabs1)
+				if ((uintptr_t)slabs > slabs1)
 					sti_ = *slabs;
 
 				sti_skip = (sti_ >> 10);

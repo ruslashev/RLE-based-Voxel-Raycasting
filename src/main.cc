@@ -189,11 +189,7 @@ static void display_pbo()
 
 	if (!shader_colorize) {
 		shader_colorize = shader_manager.loadfromFile(
-#ifdef ANTIALIAS
-			"shader/colorize_buddha_soft_2xAA.vert", "shader/colorize_buddha_soft_2xAA.frag"
-#else
 			"shader/colorize_buddha_soft.vert", "shader/colorize_buddha_soft.frag"
-#endif
 		);
 	}
 
