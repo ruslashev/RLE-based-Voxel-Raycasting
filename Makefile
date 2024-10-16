@@ -2,7 +2,6 @@ src = \
       src/alloc.cc \
       src/gl_main.cc \
       src/rle4.cc \
-      src/vec_math.cc \
       src/glsl.cc \
       src/main.cc
 

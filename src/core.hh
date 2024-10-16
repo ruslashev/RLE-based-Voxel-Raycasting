@@ -5,7 +5,8 @@
 #ifdef IN_CUDA_ENV
   typedef float3 vec3f;
 #else
-  #include "vec_math.hh"
+  #include "../inc/mathlib/vector.h"
+  typedef vector3 vec3f;
 #endif
 
 #define SCREEN_SIZE_X 1024

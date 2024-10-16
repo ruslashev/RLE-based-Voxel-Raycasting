@@ -7,7 +7,6 @@
   typedef int3 vec3i;
   struct matrix44 { float m[4][4]; };
 #else
-  #include "vec_math.hh"
   #include "../inc/mathlib/matrix.h"
 #endif
 
@@ -33,6 +32,17 @@ struct RayMap_GPU
 };
 
 #ifndef IN_CUDA_ENV
+static inline float angle(const vec3f& a, const vec3f& b)
+{
+	float dot = a.x * b.x + a.y * b.y + a.z * b.z;
+	float len = a.len() * b.len();
+	if (len == 0) len = 0.00001f;
+	float input = dot / len;
+	if (input < -1) input = -1;
+	if (input > 1) input = 1;
+	return (float)acos(input);
+}
+
 struct RayMap : public RayMap_GPU
 {
 	RayMap()
@@ -80,13 +90,14 @@ struct RayMap : public RayMap_GPU
 
 		// Transform frustum
 		for (int i = 0; i < 5; i++)
-			p[i] = m * p[i].v3();
+			p[i] = m * p[i];
 
 		// Calculate vanishing point p[5]
 		vec3f down(0, -1, 0);
 		vec3f view;
 		view = (p[0] + p[2]) / 2 - p[4];
-		float alpha = float(M_PI) / 2 - down.angle(view);
+		float ang   = angle(down, view);
+		float alpha = float(M_PI) / 2 - ang;
 		float scale = 1 / sin(alpha);
 
 		p[5] = p[4] + down * scale;
@@ -94,13 +105,12 @@ struct RayMap : public RayMap_GPU
 		// Calc. matrix to transform frustum into 2D (xy-plane)
 
 		matrix44 to2d;
-		vec3f nrm;
-		nrm.cross(p[1] - p[0], p[3] - p[0]);
+		vec3f nrm = (p[1] - p[0]) * (p[3] - p[0]);
 
-		vector3 d1 = (p[1] - p[0]).v3();
-		vector3 d2 = (p[3] - p[0]).v3();
-		vector3 d3 = (nrm).v3();
-		vector3 d4 = (p[0]).v3();
+		vec3f d1 = p[1] - p[0];
+		vec3f d2 = p[3] - p[0];
+		vec3f d3 = nrm;
+		vec3f d4 = p[0];
 
 		d1 *= 1 / d1.dot(d1);
 		d2 *= 1 / d2.dot(d2);
@@ -114,7 +124,7 @@ struct RayMap : public RayMap_GPU
 		// Transform 3D to 2D
 
 		for (int i = 0; i < 6; i++)
-			p_2d[i] = to2d * p[i].v3();
+			p_2d[i] = to2d * p[i];
 
 		vanishing_point_2d = p_2d[5];
 

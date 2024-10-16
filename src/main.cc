@@ -124,19 +124,19 @@ static void update_viewpoint()
 
 	// Transform direction vector
 	static vec3f pos = screen.pos;
-	vec3f forward = m * vec3f(0, 0, -step).v3();
-	vec3f side    = m * vec3f(-step, 0, 0).v3();
-	vec3f updown  = m * vec3f(0, -step, 0).v3();
+	vec3f forward = m * vec3f(0, 0, -step);
+	vec3f side    = m * vec3f(-step, 0, 0);
+	vec3f updown  = m * vec3f(0, -step, 0);
 
 	if (keyboard.KeyDn(119)) pos = pos + forward;
 	if (keyboard.KeyDn(115)) pos = pos - forward;
-	if (keyboard.KeyDn(97)) pos = pos + side;
+	if (keyboard.KeyDn(97))  pos = pos + side;
 	if (keyboard.KeyDn(100)) pos = pos - side;
 	if (keyboard.KeyDn(113)) pos = pos + updown;
 	if (keyboard.KeyDn(101)) pos = pos - updown;
 	if (keyboard.KeyPr(102)) gl_main.ToggleFullscreen();
-	if (keyboard.KeyPr(43)) multiplier *= 2;
-	if (keyboard.KeyPr(45)) if (multiplier > 0.01) multiplier /= 2;
+	if (keyboard.KeyPr(43))  multiplier *= 2;
+	if (keyboard.KeyPr(45))  if (multiplier > 0.01) multiplier /= 2;
 
 	screen.pos = screen.pos * 0.9 + pos * 0.1f;
 }
