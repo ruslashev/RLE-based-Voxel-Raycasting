@@ -187,11 +187,10 @@ static void display_pbo()
 	if (!shader_soft)
 		shader_soft = shader_manager.loadfromFile("shader/soft.vert", "shader/soft.frag");
 
-	if (!shader_colorize) {
+	if (!shader_colorize)
 		shader_colorize = shader_manager.loadfromFile(
 			"shader/colorize_buddha_soft.vert", "shader/colorize_buddha_soft.frag"
 		);
-	}
 
 	static FBO fbo1(2048, 2048);
 
