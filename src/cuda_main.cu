@@ -422,11 +422,7 @@ struct Render
 			if (pos3d_z * res_y2 + pos3d_y <= pos3d_z * y_clip_min)
 				continue;
 
-#ifdef MEM_TEXTURE
-			uint2 int64_ofs_rle = tex2D(texture_pointermap, vx, vz + tex_map_ofs);
-#else
 			uint2 int64_ofs_rle = ((uint2*)map_ptr)[vx + vz * rle4_gridx];
-#endif
 
 			uint slab_offset = int64_ofs_rle.x;
 			uint len_first = int64_ofs_rle.y;
@@ -448,13 +444,8 @@ struct Render
 
 			sti_ = len_first >> 16;
 
-#ifdef MEM_TEXTURE
-			uint slabs = 2 + slab_offset;
-			uint send = slabs + slen;
-#else
 			ushort* slabs = slab_ptr + 2 + slab_offset;
 			ushort* send = slabs + slen;
-#endif
 
 			float tex = 0;
 			sti_general = 0;
@@ -464,13 +455,8 @@ struct Render
 
 #pragma unroll 2
 			for (; slabs < send; ++slabs) {
-#ifdef MEM_TEXTURE
-				if (uint(slabs) > slabs1)
-					sti_ = tex1Dfetch(texture_slabs, slabs);
-#else
 				if (uint(slabs) > slabs1)
 					sti_ = *slabs;
-#endif
 
 				sti_skip = (sti_ >> 10);
 				sti_general += (sti_ & 1023) << mip_lvl;
@@ -609,11 +595,7 @@ struct Render
 					uint u = min(max(float(uz / onez), float(texture)), float(tex - 1.0));
 					uint real_z = int(float(1 / onez)) & 0xfffe;
 
-#ifdef MEM_TEXTURE
-					uint color16 = tex1Dfetch(texture_slabs, send + u);
-#else
 					uint color16 = send[u];
-#endif
 
 					((uint*)ofs_rgb_start)[y]
 						= color16 + (real_z << 16); //+(real_z<<16);//depth;//send[uint(u)]

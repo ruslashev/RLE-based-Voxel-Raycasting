@@ -101,42 +101,6 @@ bool RLE4::load(const char* filename)
 	return true;
 }
 
-void RLE4::all_to_gpu_tex()
-{
-	int mapofs_y = 0;
-	int mapadd_y = 1024;
-	int slabs_total = 0;
-
-	for (int m = 0; m < nummaps; m++)
-		slabs_total += map[m].slabs_size;
-
-	char* slabs_mem = (char*)malloc_check(slabs_total * 2);
-
-	slabs_total = 0;
-	for (int m = 0; m < nummaps; m++) {
-		for (int a = 0; a < map[m].sx * map[m].sx; a++)
-			map[m].map[a * 2] += slabs_total;
-		memcpy(slabs_mem + slabs_total * 2, map[m].slabs, map[m].slabs_size * 2);
-		slabs_total += map[m].slabs_size;
-	}
-
-	cuda_create_1d_texture((char*)slabs_mem, slabs_total * 2);
-
-	char* mapdata64 = (char*)malloc_check(map[0].sx * 8 * map[0].sz * 2);
-
-	for (int m = 0; m < nummaps; m++) {
-		for (int y = 0; y < map[m].sy; y++)
-			memcpy(mapdata64 + map[0].sx * 8 * (mapofs_y + y),
-					((char*)map[m].map) + y * map[m].sx * 8, map[m].sx * 8);
-
-		mapofs_y += mapadd_y;
-		mapadd_y >>= 1;
-	}
-
-	cuda_create_2d_texture((uint*)mapdata64, map[0].sx, map[0].sz * 2);
-	free(mapdata64);
-}
-
 void RLE4::all_to_gpu()
 {
 	for (int m = 0; m < nummaps; m++)

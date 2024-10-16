@@ -23,5 +23,4 @@ struct RLE4
 	bool load(const char* filename);
 	Map4 copy_to_gpu(Map4 map4);
 	void all_to_gpu();
-	void all_to_gpu_tex();
 };

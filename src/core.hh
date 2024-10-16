@@ -11,8 +11,6 @@
 #define MIP_DISTANCE (SCREEN_SIZE_X)
 #define THREAD_COUNT 128
 
-// #define MEM_TEXTURE
-
 // #define ANTIALIAS
 // #define CLIPREGION
 

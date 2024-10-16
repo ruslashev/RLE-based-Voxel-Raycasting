@@ -73,10 +73,6 @@ int main(int argc, char** argv)
 	printf("loading ready.\n");
 	rle4.all_to_gpu();
 
-#ifdef MEM_TEXTURE
-	rle4.all_to_gpu_tex();
-#endif
-
 	printf("copy to gpu ready.\n");
 	memcpy(ray_map.map4_gpu, rle4.mapgpu, 10 * sizeof(Map4));
 	ray_map.nummaps = rle4.nummaps;
