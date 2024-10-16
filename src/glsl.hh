@@ -59,44 +59,41 @@ public:
 	void begin(); //!< use Shader. OpenGL calls will go through shader.
 	void end(); //!< Stop using this shader. OpenGL calls will go through regular pipeline.
 
-	bool enabled;
+	void setUniform1f(const char* varname, GLfloat v0);
+	void setUniform2f(const char* varname, GLfloat v0, GLfloat v1);
+	void setUniform3f(const char* varname, GLfloat v0, GLfloat v1, GLfloat v2);
+	void setUniform4f(const char* varname, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
 
-	// Uniform Variables
-	bool setUniform1f(const char* varname, GLfloat v0);
-	bool setUniform2f(const char* varname, GLfloat v0, GLfloat v1);
-	bool setUniform3f(const char* varname, GLfloat v0, GLfloat v1, GLfloat v2);
-	bool setUniform4f(const char* varname, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
+	void setUniform1i(const char* varname, GLint v0);
+	void setUniform2i(const char* varname, GLint v0, GLint v1);
+	void setUniform3i(const char* varname, GLint v0, GLint v1, GLint v2);
+	void setUniform4i(const char* varname, GLint v0, GLint v1, GLint v2, GLint v3);
 
-	bool setUniform1i(const char* varname, GLint v0);
-	bool setUniform2i(const char* varname, GLint v0, GLint v1);
-	bool setUniform3i(const char* varname, GLint v0, GLint v1, GLint v2);
-	bool setUniform4i(const char* varname, GLint v0, GLint v1, GLint v2, GLint v3);
+	void setUniform1fv(const char* varname, GLsizei count, GLfloat* value);
+	void setUniform2fv(const char* varname, GLsizei count, GLfloat* value);
+	void setUniform3fv(const char* varname, GLsizei count, GLfloat* value);
+	void setUniform4fv(const char* varname, GLsizei count, GLfloat* value);
+	void setUniform1iv(const char* varname, GLsizei count, GLint* value);
+	void setUniform2iv(const char* varname, GLsizei count, GLint* value);
+	void setUniform3iv(const char* varname, GLsizei count, GLint* value);
+	void setUniform4iv(const char* varname, GLsizei count, GLint* value);
 
-	bool setUniform1fv(const char* varname, GLsizei count, GLfloat* value);
-	bool setUniform2fv(const char* varname, GLsizei count, GLfloat* value);
-	bool setUniform3fv(const char* varname, GLsizei count, GLfloat* value);
-	bool setUniform4fv(const char* varname, GLsizei count, GLfloat* value);
-	bool setUniform1iv(const char* varname, GLsizei count, GLint* value);
-	bool setUniform2iv(const char* varname, GLsizei count, GLint* value);
-	bool setUniform3iv(const char* varname, GLsizei count, GLint* value);
-	bool setUniform4iv(const char* varname, GLsizei count, GLint* value);
-
-	bool setUniformMatrix2fv(const char* varname, GLsizei count, GLboolean transpose, GLfloat* value);
-	bool setUniformMatrix3fv(const char* varname, GLsizei count, GLboolean transpose, GLfloat* value);
-	bool setUniformMatrix4fv(const char* varname, GLsizei count, GLboolean transpose, GLfloat* value);
+	void setUniformMatrix2fv(const char* varname, GLsizei count, GLboolean transpose, GLfloat* value);
+	void setUniformMatrix3fv(const char* varname, GLsizei count, GLboolean transpose, GLfloat* value);
+	void setUniformMatrix4fv(const char* varname, GLsizei count, GLboolean transpose, GLfloat* value);
 
 	void GetUniformfv(const char* name, GLfloat* values);
 	void GetUniformiv(const char* name, GLint* values);
 
-	bool setVertexAttrib1f(GLuint index, GLfloat v0);
-	bool setVertexAttrib2f(GLuint index, GLfloat v0, GLfloat v1);
-	bool setVertexAttrib3f(GLuint index, GLfloat v0, GLfloat v1, GLfloat v2);
-	bool setVertexAttrib4f(GLuint index, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
+	void setVertexAttrib1f(GLuint index, GLfloat v0);
+	void setVertexAttrib2f(GLuint index, GLfloat v0, GLfloat v1);
+	void setVertexAttrib3f(GLuint index, GLfloat v0, GLfloat v1, GLfloat v2);
+	void setVertexAttrib4f(GLuint index, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
 
 	void manageMemory(void) { _mM = true; }
 
-	void enable(void) { _noshader = true; }
-	void disable(void) { _noshader = false; }
+	void enable(void) { enabled = true; }
+	void disable(void) { enabled = false; }
 
 private:
 	GLint GetUniLoc(const GLcharARB* name); // get location of a variable
@@ -108,7 +105,7 @@ private:
 	std::vector<glShaderObject*> ShaderList; // List of all Shader Programs
 
 	bool _mM;
-	bool _noshader;
+	bool enabled;
 };
 
 class glShaderManager {

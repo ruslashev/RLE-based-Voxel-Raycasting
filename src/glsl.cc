@@ -44,9 +44,8 @@ glShader::glShader()
 	ProgramObject = 0;
 	linker_log = 0;
 	is_linked = false;
-	enabled = false;
 	_mM = false;
-	_noshader = true;
+	enabled = true;
 
 	ProgramObject = glCreateProgram();
 }
@@ -153,11 +152,10 @@ const char* glShader::getLinkerLog(void)
 
 void glShader::begin(void)
 {
-	enabled = true;
-
 	if (ProgramObject == 0)
 		return;
-	if (!_noshader)
+
+	if (!enabled)
 		return;
 
 	if (is_linked) {
@@ -168,280 +166,240 @@ void glShader::begin(void)
 
 void glShader::end(void)
 {
-	enabled = false;
-
-	if (!_noshader)
+	if (!enabled)
 		return;
 
 	glUseProgram(0);
 	check_gl_err();
 }
 
-bool glShader::setUniform1f(const char* varname, GLfloat v0)
+void glShader::setUniform1f(const char* varname, GLfloat v0)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform1f(loc, v0);
-
-	return true;
 }
 
-bool glShader::setUniform2f(const char* varname, GLfloat v0, GLfloat v1)
+void glShader::setUniform2f(const char* varname, GLfloat v0, GLfloat v1)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform2f(loc, v0, v1);
-
-	return true;
 }
 
-bool glShader::setUniform3f(const char* varname, GLfloat v0, GLfloat v1, GLfloat v2)
+void glShader::setUniform3f(const char* varname, GLfloat v0, GLfloat v1, GLfloat v2)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform3f(loc, v0, v1, v2);
-
-	return true;
 }
 
-bool glShader::setUniform4f(const char* varname, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
+void glShader::setUniform4f(const char* varname, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform4f(loc, v0, v1, v2, v3);
-
-	return true;
 }
 
-bool glShader::setUniform1i(const char* varname, GLint v0)
+void glShader::setUniform1i(const char* varname, GLint v0)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform1i(loc, v0);
-
-	return true;
 }
 
-bool glShader::setUniform2i(const char* varname, GLint v0, GLint v1)
+void glShader::setUniform2i(const char* varname, GLint v0, GLint v1)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform2i(loc, v0, v1);
-
-	return true;
 }
 
-bool glShader::setUniform3i(const char* varname, GLint v0, GLint v1, GLint v2)
+void glShader::setUniform3i(const char* varname, GLint v0, GLint v1, GLint v2)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform3i(loc, v0, v1, v2);
-
-	return true;
 }
 
-bool glShader::setUniform4i(const char* varname, GLint v0, GLint v1, GLint v2, GLint v3)
+void glShader::setUniform4i(const char* varname, GLint v0, GLint v1, GLint v2, GLint v3)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform4i(loc, v0, v1, v2, v3);
-
-	return true;
 }
 
-bool glShader::setUniform1fv(const char* varname, GLsizei count, GLfloat* value)
+void glShader::setUniform1fv(const char* varname, GLsizei count, GLfloat* value)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform1fv(loc, count, value);
-
-	return true;
 }
 
-bool glShader::setUniform2fv(const char* varname, GLsizei count, GLfloat* value)
+void glShader::setUniform2fv(const char* varname, GLsizei count, GLfloat* value)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform2fv(loc, count, value);
-
-	return true;
 }
 
-bool glShader::setUniform3fv(const char* varname, GLsizei count, GLfloat* value)
+void glShader::setUniform3fv(const char* varname, GLsizei count, GLfloat* value)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform3fv(loc, count, value);
-
-	return true;
 }
 
-bool glShader::setUniform4fv(const char* varname, GLsizei count, GLfloat* value)
+void glShader::setUniform4fv(const char* varname, GLsizei count, GLfloat* value)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform4fv(loc, count, value);
-
-	return true;
 }
 
-bool glShader::setUniform1iv(const char* varname, GLsizei count, GLint* value)
+void glShader::setUniform1iv(const char* varname, GLsizei count, GLint* value)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform1iv(loc, count, value);
-
-	return true;
 }
 
-bool glShader::setUniform2iv(const char* varname, GLsizei count, GLint* value)
+void glShader::setUniform2iv(const char* varname, GLsizei count, GLint* value)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform2iv(loc, count, value);
-
-	return true;
 }
 
-bool glShader::setUniform3iv(const char* varname, GLsizei count, GLint* value)
+void glShader::setUniform3iv(const char* varname, GLsizei count, GLint* value)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform3iv(loc, count, value);
-
-	return true;
 }
 
-bool glShader::setUniform4iv(const char* varname, GLsizei count, GLint* value)
+void glShader::setUniform4iv(const char* varname, GLsizei count, GLint* value)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniform4iv(loc, count, value);
-
-	return true;
 }
 
-bool glShader::setUniformMatrix2fv(const char* varname, GLsizei count, GLboolean transpose, GLfloat* value)
+void glShader::setUniformMatrix2fv(const char* varname, GLsizei count, GLboolean transpose, GLfloat* value)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniformMatrix2fv(loc, count, transpose, value);
-
-	return true;
 }
 
-bool glShader::setUniformMatrix3fv(const char* varname, GLsizei count, GLboolean transpose, GLfloat* value)
+void glShader::setUniformMatrix3fv(const char* varname, GLsizei count, GLboolean transpose, GLfloat* value)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniformMatrix3fv(loc, count, transpose, value);
-
-	return true;
 }
 
-bool glShader::setUniformMatrix4fv(const char* varname, GLsizei count, GLboolean transpose, GLfloat* value)
+void glShader::setUniformMatrix4fv(const char* varname, GLsizei count, GLboolean transpose, GLfloat* value)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	GLint loc = GetUniLoc(varname);
 	if (loc == -1)
-		return false;
+		return;
 
 	glUniformMatrix4fv(loc, count, transpose, value);
 	check_gl_err();
-
-	return true;
 }
 
 GLint glShader::GetUniLoc(const GLcharARB* name)
@@ -476,44 +434,36 @@ void glShader::GetUniformiv(const char* name, GLint* values)
 	glGetUniformiv(ProgramObject, loc, values);
 }
 
-bool glShader::setVertexAttrib1f(GLuint index, GLfloat v0)
+void glShader::setVertexAttrib1f(GLuint index, GLfloat v0)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	glVertexAttrib1f(index, v0);
-
-	return true;
 }
 
-bool glShader::setVertexAttrib2f(GLuint index, GLfloat v0, GLfloat v1)
+void glShader::setVertexAttrib2f(GLuint index, GLfloat v0, GLfloat v1)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	glVertexAttrib2f(index, v0, v1);
-
-	return true;
 }
 
-bool glShader::setVertexAttrib3f(GLuint index, GLfloat v0, GLfloat v1, GLfloat v2)
+void glShader::setVertexAttrib3f(GLuint index, GLfloat v0, GLfloat v1, GLfloat v2)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	glVertexAttrib3f(index, v0, v1, v2);
-
-	return true;
 }
 
-bool glShader::setVertexAttrib4f(GLuint index, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
+void glShader::setVertexAttrib4f(GLuint index, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
 {
-	if (!_noshader)
-		return true;
+	if (!enabled)
+		return;
 
 	glVertexAttrib4f(index, v0, v1, v2, v3);
-
-	return true;
 }
 
 glShaderObject::glShaderObject()
