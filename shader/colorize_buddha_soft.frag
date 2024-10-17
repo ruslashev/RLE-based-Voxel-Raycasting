@@ -53,25 +53,25 @@ void main(void)
 	float o2 = (wide * gl_FragCoord.x + (1. - wide) * gl_FragCoord.y) / RESX;
 
 	float ang2 =
-		scx1 * abs(1. - step(scy1, 0.) - vp.y) / scy1 +
-		step(scy1, 0.)        * (1. - vp.x) +
-		(1. - step(scy1, 0.)) * (vp.x);
+		(xs - vp.x)  * abs(1. - upper - vp.y) / (ys - vp.y) +
+		upper        * (1. - vp.x) +
+		(1. - upper) * (vp.x);
 
 	float ang3 =
-		scy1 * abs(1. - step(scx1, 0.) - vp.x) / scx1 +
-		step(scx1, 0.)        * (1. - vp.y) +
-		(1. - step(scx1, 0.)) * (vp.y);
+		(ys - vp.y) * abs(1. - left - vp.x) / (xs - vp.x) +
+		left        * (1. - vp.y) +
+		(1. - left) * (vp.y);
 
 	ang3 = ang3 * RESY / RESX + border;
 
-	float x_pre = (wide * ang3 + ang2 * (1. - wide));
+	float x_pre = ang3 * wide + ang2 * (1. - wide);
 
 	vec2 texpos = vec2(0);
 
-	texpos.y = seg_dn * (ofs_add.y +      x_pre) +
-	           seg_up * (ofs_add.x + 1. - x_pre) +
-	           seg_lt * (ofs_add.w +      x_pre) +
-	           seg_rt * (ofs_add.z + 1. - x_pre);
+	texpos.y = seg_up * (1. - x_pre + ofs_add.x) +
+	           seg_dn * (     x_pre + ofs_add.y) +
+	           seg_rt * (1. - x_pre + ofs_add.z) +
+	           seg_lt * (     x_pre + ofs_add.w);
 
 	texpos.y *= res_x_y_ray_ratio.w * 0.25;
 
@@ -80,12 +80,12 @@ void main(void)
 	float seg_rt_x = rot_x_gt0 * seg_rt + (1.0 - rot_x_gt0) * seg_lt;
 	float seg_lt_x = rot_x_gt0 * seg_lt + (1.0 - rot_x_gt0) * seg_rt;
 
-	texpos.x = seg_up_x * (      o2 + border) +
-	           seg_dn_x * (1. - (o2 + border)) +
-	           seg_rt_x * (      o2) +
-	           seg_lt_x * (1. -  o2);
+	texpos.x = seg_up_x * (     o2 + border) +
+	           seg_dn_x * (1. - o2 - border) +
+	           seg_rt_x * (     o2) +
+	           seg_lt_x * (1. - o2);
 
-	vec4 c_out = vec4(0.);
+	vec4 c_out = vec4(0);
 	float fragz = 0.;
 
 	vec4 c = texture2D(texDecal, texpos);
