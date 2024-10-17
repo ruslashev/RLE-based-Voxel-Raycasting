@@ -111,6 +111,13 @@ static void update_viewpoint()
 	screen.pos = screen.pos * 0.9 + pos * 0.1f;
 }
 
+static void compute_ray_map()
+{
+	ray_map.set_border(0.125);
+	ray_map.set_ray_limit(RAYS_CASTED_RES);
+	ray_map.get_ray_map(screen.pos, screen.rot);
+}
+
 static void render_to_pbo()
 {
 	static int render_width = RENDER_SIZE;
@@ -257,13 +264,6 @@ static void display_pbo()
 	glFlush();
 }
 
-static void compute_ray_map()
-{
-	ray_map.set_border(0.125);
-	ray_map.set_ray_limit(RAYS_CASTED_RES);
-	ray_map.get_ray_map(screen.pos, screen.rot);
-}
-
 static float fps_count(int diff)
 {
 	const int num = 10;
@@ -287,12 +287,8 @@ static void display()
 
 	update_viewpoint();
 	compute_ray_map();
-
 	render_to_pbo();
-	glFlush();
-
 	display_pbo();
-	glFlush();
 
 	int render_end = glutGet(GLUT_ELAPSED_TIME);
 
