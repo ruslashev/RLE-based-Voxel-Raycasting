@@ -21,16 +21,36 @@ void main(void)
 	float scx1 = xs - vp.x;
 	float scy1 = ys - vp.y;
 
-	float upper = step(scy1, 0.);
-	float left  = step(scx1, 0.);
-	float ostep = step(abs(scy1) - abs(scx1) * RESX / RESY, 0.);
+	// float upper = step(scy1, 0.);
+	float upper;
+	if (ys < vp.y) {
+		upper = 1.;
+	} else {
+		upper = 0.;
+	}
 
-	float seg_up = (1. - upper) * (1. - ostep);
-	float seg_dn =       upper  * (1. - ostep);
-	float seg_rt = (1. - left ) *       ostep ;
-	float seg_lt =       left   *       ostep ;
+	// float left = step(scx1, 0.);
+	float left;
+	if (xs < vp.x) {
+		left = 1.;
+	} else {
+		left = 0.;
+	}
 
-	float o2 = (ostep * gl_FragCoord.x + (1. - ostep) * gl_FragCoord.y) / RESX;
+	// float wide = step(abs(scy1) - abs(scx1) * RESX / RESY, 0.);
+	float wide;
+	if (abs(xs - vp.x) * RESX > abs(ys - vp.y) * RESY) {
+		wide = 1.;
+	} else {
+		wide = 0.;
+	}
+
+	float seg_up = (1. - upper) * (1. - wide);
+	float seg_dn =       upper  * (1. - wide);
+	float seg_rt = (1. - left ) *       wide ;
+	float seg_lt =       left   *       wide ;
+
+	float o2 = (wide * gl_FragCoord.x + (1. - wide) * gl_FragCoord.y) / RESX;
 
 	float ang2 =
 		scx1 * abs(1. - step(scy1, 0.) - vp.y) / scy1 +
@@ -44,7 +64,7 @@ void main(void)
 
 	ang3 = ang3 * RESY / RESX + border;
 
-	float x_pre = (ostep * ang3 + ang2 * (1. - ostep));
+	float x_pre = (wide * ang3 + ang2 * (1. - wide));
 
 	vec2 texpos = vec2(0);
 
