@@ -12,7 +12,6 @@
 
 struct RayMap
 {
-	vec3f vanishing_point_2d;
 	int map_line_count;
 	int map_line_limit;
 	vec3f rotation; // Frustum orientation
@@ -23,7 +22,7 @@ struct RayMap
 	int nummaps;
 	int maxres;
 	int res[4];
-	vec3f p_2d[8];
+	vec3f vp;
 	vec3f p_no[8];
 	matrix44 to3d;
 	float p_ofs_min[4];

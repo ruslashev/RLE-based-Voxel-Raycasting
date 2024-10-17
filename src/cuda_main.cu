@@ -141,7 +141,7 @@ struct Render
 			int j = quadrant;
 
 			vec3f p1, p2, p1_3d, p2_3d;
-			p1 = ray_map.p_2d[5];
+			p1 = ray_map.vp;
 			p2 = ray_map.p_no[j * 2] + (ray_map.p_no[j * 2 + 1] - ray_map.p_no[j * 2]) * a;
 
 			ClipLine(p1, p2, ray_map.clip_max, ray_map.clip_min);

@@ -86,10 +86,8 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 
 	// Transform 3D to 2D
 
-	for (int i = 0; i < 6; i++)
-		p_2d[i] = to2d * p[i];
-
-	vanishing_point_2d = p_2d[5];
+	vp = to2d * p[5];
+	vp.z = 0;
 
 	// Calc Lines
 
@@ -120,30 +118,28 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 	res[2] = 0;
 	res[3] = 0;
 
-	p_2d[5].z = 0;
-
 	// Upper Part
-	if (p_2d[5].y > border) {
-		p_no[0] = p_2d[5] + plist[0] * abs(p_2d[5].y - border);
-		p_no[1] = p_2d[5] + plist[1] * abs(p_2d[5].y - border);
+	if (vp.y > border) {
+		p_no[0] = vp + plist[0] * abs(vp.y - border);
+		p_no[1] = vp + plist[1] * abs(vp.y - border);
 
 		vec3f p_no_in = p_no[1];
 
-		if (p_2d[5].x > 1) {
+		if (vp.x > 1) {
 			if (p_no[1].x > 1)
 				p_no[1].x = 1;
-		} else if ((p_no[0] - p_2d[5]).dot(plist2[2] - p_2d[5]) > 0) {
-			p_no[1] = p_2d[5]
-				+ (plist2[2] - p_2d[5])
-				* abs((plist2[0].y - p_2d[5].y) / (plist2[2].y - p_2d[5].y));
+		} else if ((p_no[0] - vp).dot(plist2[2] - vp) > 0) {
+			p_no[1] = vp
+				+ (plist2[2] - vp)
+				* abs((plist2[0].y - vp.y) / (plist2[2].y - vp.y));
 		}
-		if (p_2d[5].x < 0) {
+		if (vp.x < 0) {
 			if (p_no[0].x < 0)
 				p_no[0].x = 0;
-		} else if ((p_no_in - p_2d[5]).dot(plist2[3] - p_2d[5]) > 0) {
-			p_no[0] = p_2d[5]
-				+ (plist2[3] - p_2d[5])
-				* abs((plist2[1].y - p_2d[5].y) / (plist2[3].y - p_2d[5].y));
+		} else if ((p_no_in - vp).dot(plist2[3] - vp) > 0) {
+			p_no[0] = vp
+				+ (plist2[3] - vp)
+				* abs((plist2[1].y - vp.y) / (plist2[3].y - vp.y));
 		}
 		p_no[0].y = p_no[1].y = plist2[0].y;
 		p_no[0].x = float(int(maxres * p_no[0].x) - safety) / maxres;
@@ -160,28 +156,28 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 	}
 
 	// Lower Part
-	if (p_2d[5].y < 1 - border) {
-		p_no[2] = p_2d[5] + plist[3] * abs(p_2d[5].y - 1 + border);
-		p_no[3] = p_2d[5] + plist[2] * abs(p_2d[5].y - 1 + border);
+	if (vp.y < 1 - border) {
+		p_no[2] = vp + plist[3] * abs(vp.y - 1 + border);
+		p_no[3] = vp + plist[2] * abs(vp.y - 1 + border);
 
 		vec3f p_no_in = p_no[2];
 
-		if (p_2d[5].x < 0) {
+		if (vp.x < 0) {
 			if (p_no[2].x < 0)
 				p_no[2].x = 0;
-		} else if ((p_no[3] - p_2d[5]).dot(plist2[0] - p_2d[5]) > 0) {
-			p_no[2] = p_2d[5]
-				+ (plist2[0] - p_2d[5])
-				* abs((plist2[2].y - p_2d[5].y) / (plist2[0].y - p_2d[5].y));
+		} else if ((p_no[3] - vp).dot(plist2[0] - vp) > 0) {
+			p_no[2] = vp
+				+ (plist2[0] - vp)
+				* abs((plist2[2].y - vp.y) / (plist2[0].y - vp.y));
 		}
 
-		if (p_2d[5].x > 1) {
+		if (vp.x > 1) {
 			if (p_no[3].x > 1)
 				p_no[3].x = 1;
 		} else {
-			vec3f delta = plist2[1] - p_2d[5];
-			if ((p_no_in - p_2d[5]).dot(delta) > 0)
-				p_no[3] = p_2d[5] + delta * abs((plist2[3].y - p_2d[5].y) / delta.y);
+			vec3f delta = plist2[1] - vp;
+			if ((p_no_in - vp).dot(delta) > 0)
+				p_no[3] = vp + delta * abs((plist2[3].y - vp.y) / delta.y);
 		}
 
 		p_no[2].y = p_no[3].y = plist2[2].y;
@@ -199,32 +195,32 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 	}
 
 	// Left Part
-	if (p_2d[5].x > 0) {
-		p_no[4] = p_2d[5] + plist[0] * abs(p_2d[5].x); // -1 -1
-		p_no[5] = p_2d[5] + plist[3] * abs(p_2d[5].x); // -1  1
+	if (vp.x > 0) {
+		p_no[4] = vp + plist[0] * abs(vp.x); // -1 -1
+		p_no[5] = vp + plist[3] * abs(vp.x); // -1  1
 
 		vec3f p_no_in = p_no[5];
 
-		if (p_2d[5].y > 1 - border) {
+		if (vp.y > 1 - border) {
 			if (p_no[5].y > 1 - border)
 				p_no[5].y = 1 - border;
 		} else {
 			int id = 2;
-			if ((p_no[4] - p_2d[5]).dot(plist2[id] - p_2d[5]) > 0) {
-				p_no[5] = p_2d[5]
-					+ (plist2[id] - p_2d[5])
-					* abs((plist2[id ^ 1].x - p_2d[5].x) / (plist2[id].x - p_2d[5].x));
+			if ((p_no[4] - vp).dot(plist2[id] - vp) > 0) {
+				p_no[5] = vp
+					+ (plist2[id] - vp)
+					* abs((plist2[id ^ 1].x - vp.x) / (plist2[id].x - vp.x));
 			}
 		}
-		if (p_2d[5].y < border) {
+		if (vp.y < border) {
 			if (p_no[4].y < border)
 				p_no[4].y = border;
 		} else {
 			int id = 1;
-			if ((p_no_in - p_2d[5]).dot(plist2[id] - p_2d[5]) > 0) {
-				p_no[4] = p_2d[5]
-					+ (plist2[id] - p_2d[5])
-					* abs((plist2[id ^ 1].x - p_2d[5].x) / (plist2[id].x - p_2d[5].x));
+			if ((p_no_in - vp).dot(plist2[id] - vp) > 0) {
+				p_no[4] = vp
+					+ (plist2[id] - vp)
+					* abs((plist2[id ^ 1].x - vp.x) / (plist2[id].x - vp.x));
 			}
 		}
 		p_no[4].x = p_no[5].x = 0;
@@ -242,33 +238,33 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 	}
 
 	// Right Part
-	if (p_2d[5].x < 1) {
-		p_no[6] = p_2d[5] + plist[1] * abs(1 - p_2d[5].x); // 1 -1
-		p_no[7] = p_2d[5] + plist[2] * abs(1 - p_2d[5].x); // 1  1
+	if (vp.x < 1) {
+		p_no[6] = vp + plist[1] * abs(1 - vp.x); // 1 -1
+		p_no[7] = vp + plist[2] * abs(1 - vp.x); // 1  1
 
 		vec3f p_no_in = p_no[7];
 
-		if (p_2d[5].y > 1 - border) {
+		if (vp.y > 1 - border) {
 			if (p_no[7].y > 1 - border)
 				p_no[7].y = 1 - border;
 		} else {
 
 			int id = 3;
-			if ((p_no[6] - p_2d[5]).dot(plist2[id] - p_2d[5]) > 0) {
-				p_no[7] = p_2d[5]
-					+ (plist2[id] - p_2d[5])
-					* abs((plist2[id ^ 1].x - p_2d[5].x) / (plist2[id].x - p_2d[5].x));
+			if ((p_no[6] - vp).dot(plist2[id] - vp) > 0) {
+				p_no[7] = vp
+					+ (plist2[id] - vp)
+					* abs((plist2[id ^ 1].x - vp.x) / (plist2[id].x - vp.x));
 			}
 		}
-		if (p_2d[5].y < border) {
+		if (vp.y < border) {
 			if (p_no[6].y < border)
 				p_no[6].y = border;
 		} else {
 			int id = 0;
-			if ((p_no_in - p_2d[5]).dot(plist2[id] - p_2d[5]) > 0) {
-				p_no[6] = p_2d[5]
-					+ (plist2[id] - p_2d[5])
-					* abs((plist2[id ^ 1].x - p_2d[5].x) / (plist2[id].x - p_2d[5].x));
+			if ((p_no_in - vp).dot(plist2[id] - vp) > 0) {
+				p_no[6] = vp
+					+ (plist2[id] - vp)
+					* abs((plist2[id ^ 1].x - vp.x) / (plist2[id].x - vp.x));
 			}
 		}
 
