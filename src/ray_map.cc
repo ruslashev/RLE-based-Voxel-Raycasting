@@ -152,7 +152,6 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 			res[0] = (maxres * 3);
 
 		p_ofs_min[0] = p_no[0].x;
-		p_ofs_max[0] = p_no[1].x;
 	}
 
 	// Lower Part
@@ -191,7 +190,6 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 			res[1] = (maxres * 3);
 
 		p_ofs_min[1] = p_no[2].x;
-		p_ofs_max[1] = p_no[3].x;
 	}
 
 	// Left Part
@@ -234,7 +232,6 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 			res[2] = (maxres * 3);
 
 		p_ofs_min[2] = p_no[4].y;
-		p_ofs_max[2] = p_no[5].y;
 	}
 
 	// Right Part
@@ -279,7 +276,6 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 			res[3] = (maxres * 3);
 
 		p_ofs_min[3] = p_no[6].y;
-		p_ofs_max[3] = p_no[7].y;
 	}
 
 	visible_rays = res[0] + res[1] + res[2] + res[3];

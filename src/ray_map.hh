@@ -26,7 +26,6 @@ struct RayMap
 	vec3f p_no[8];
 	matrix44 to3d;
 	float p_ofs_min[4];
-	float p_ofs_max[4];
 
 	RayMap();
 	void set_border(float a);
