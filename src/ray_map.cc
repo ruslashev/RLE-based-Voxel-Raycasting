@@ -37,13 +37,11 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 	rotation = rot;
 	position = pos;
 
-	vec3f p[6] = {
-		vec3f( 1,  1, 1), // [0] frustum
-		vec3f(-1,  1, 1), // [1]    "
-		vec3f(-1, -1, 1), // [2]    "
-		vec3f( 1, -1, 1), // [3]    "
-		vec3f(0, 0, 0),   // [4] origin
-		vec3f(0, 0, 0)    // [5] intersection frustum/vec(0,1,0); will be calculated
+	vec3f frustum[4] = {
+		vec3f( 1,  1, 1),
+		vec3f(-1,  1, 1),
+		vec3f(-1, -1, 1),
+		vec3f( 1, -1, 1),
 	};
 
 	matrix44 m;
@@ -53,27 +51,25 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 
 	// Transform frustum
 	for (int i = 0; i < 5; i++)
-		p[i] = m * p[i];
+		frustum[i] = m * frustum[i];
 
-	// Calculate vanishing point p[5]
-	vec3f down(0, -1, 0);
-	vec3f view;
-	view = (p[0] + p[2]) / 2 - p[4];
+	// Calculate vanishing point
+	vec3f down  = vec3f(0, -1, 0);
+	vec3f view  = (frustum[0] + frustum[2]) / 2;
 	float ang   = angle(down, view);
 	float alpha = float(M_PI) / 2 - ang;
 	float scale = 1 / sin(alpha);
-
-	p[5] = p[4] + down * scale;
+	vec3f vp3d  = down * scale;
 
 	// Calc. matrix to transform frustum into 2D (xy-plane)
 
 	matrix44 to2d;
-	vec3f nrm = (p[1] - p[0]) * (p[3] - p[0]);
+	vec3f nrm = (frustum[1] - frustum[0]) * (frustum[3] - frustum[0]);
 
-	vec3f d1 = p[1] - p[0];
-	vec3f d2 = p[3] - p[0];
+	vec3f d1 = frustum[1] - frustum[0];
+	vec3f d2 = frustum[3] - frustum[0];
 	vec3f d3 = nrm;
-	vec3f d4 = p[0];
+	vec3f d4 = frustum[0];
 
 	d1 *= 1 / d1.dot(d1);
 	d2 *= 1 / d2.dot(d2);
@@ -86,7 +82,7 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 
 	// Transform 3D to 2D
 
-	vp = to2d * p[5];
+	vp = to2d * vp3d;
 	vp.z = 0;
 
 	// Calc Lines
