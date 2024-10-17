@@ -2,9 +2,8 @@
 
 uniform sampler2D texDecal;
 uniform float rot_x_gt0;
-uniform vec2 vanish;
+uniform vec2 vp;
 uniform vec4 ofs_add;
-varying vec2 texCoord;
 
 uniform vec4 res_x_y_ray_ratio;
 
@@ -14,14 +13,13 @@ void main(void)
 	float RESY   = res_x_y_ray_ratio.y;
 	float MAXRAY = res_x_y_ray_ratio.z;
 
-	vec2 texpos = texCoord;
-	float scx = gl_FragCoord.x / RESX;
-	float scy = gl_FragCoord.y / RESY;
+	float xs = gl_FragCoord.x / RESX;
+	float ys = gl_FragCoord.y / RESY;
 
 	float border = (RESX - RESY) / (RESX * 2.);
 
-	float scx1 = scx - vanish.x;
-	float scy1 = scy - vanish.y;
+	float scx1 = xs - vp.x;
+	float scy1 = ys - vp.y;
 
 	float upper = step(scy1, 0.);
 	float left  = step(scx1, 0.);
@@ -35,25 +33,27 @@ void main(void)
 	float o2 = (ostep * gl_FragCoord.x + (1. - ostep) * gl_FragCoord.y) / RESX;
 
 	float ang2 =
-		scx1 * abs(1. - step(scy1, 0.) - vanish.y) / scy1 +
-		step(scy1, 0.)        * (1. - vanish.x) +
-		(1. - step(scy1, 0.)) * (vanish.x);
+		scx1 * abs(1. - step(scy1, 0.) - vp.y) / scy1 +
+		step(scy1, 0.)        * (1. - vp.x) +
+		(1. - step(scy1, 0.)) * (vp.x);
 
 	float ang3 =
-		scy1 * abs(1. - step(scx1, 0.) - vanish.x) / scx1 +
-		step(scx1, 0.)        * (1. - vanish.y) +
-		(1. - step(scx1, 0.)) * (vanish.y);
+		scy1 * abs(1. - step(scx1, 0.) - vp.x) / scx1 +
+		step(scx1, 0.)        * (1. - vp.y) +
+		(1. - step(scx1, 0.)) * (vp.y);
 
 	ang3 = ang3 * RESY / RESX + border;
 
 	float x_pre = (ostep * ang3 + ang2 * (1. - ostep));
+
+	vec2 texpos = vec2(0);
 
 	texpos.y = seg_dn * (ofs_add.y +      x_pre) +
 	           seg_up * (ofs_add.x + 1. - x_pre) +
 	           seg_lt * (ofs_add.w +      x_pre) +
 	           seg_rt * (ofs_add.z + 1. - x_pre);
 
-	texpos.y = texpos.y * res_x_y_ray_ratio.w * 0.25;
+	texpos.y *= res_x_y_ray_ratio.w * 0.25;
 
 	float seg_up_x = rot_x_gt0 * seg_up + (1.0 - rot_x_gt0) * seg_dn;
 	float seg_dn_x = rot_x_gt0 * seg_dn + (1.0 - rot_x_gt0) * seg_up;
@@ -73,8 +73,8 @@ void main(void)
 	if (c.z != 1.) {
 		float z = (c.z * (1. / 256.) + c.w);
 		fragz = 0.001 / z;
-		float pos3dx = z * (scx * 2. - 1.);
-		float pos3dy = z * (scy * 2. - 1.);
+		float pos3dx = z * (xs * 2. - 1.);
+		float pos3dy = z * (ys * 2. - 1.);
 
 		vec3 nrm;
 		nrm.x = c.r;

@@ -188,7 +188,7 @@ static void display_pbo()
 
 	// Shader Parameters
 	shader_colorize->setUniform1i("texDecal", 0);
-	shader_colorize->setUniform2f("vanish",
+	shader_colorize->setUniform2f("vp",
 			1 - ray_map.vp.x,
 			(1 - ray_map.vp.y - border) * float(screen.window_width) / float(screen.window_height));
 
