@@ -38,21 +38,18 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 	position = pos;
 
 	vec3f p[6] = {
-		vec3f( 1,  1, 1), // frustum
-		vec3f(-1,  1, 1), //    "
-		vec3f(-1, -1, 1), //    "
-		vec3f( 1, -1, 1), //    "
-		vec3f(0, 0, 0),   // origin
-		vec3f(0, 0, 0)    // intersection frustum/vec(0,1,0); will be calculated
+		vec3f( 1,  1, 1), // [0] frustum
+		vec3f(-1,  1, 1), // [1]    "
+		vec3f(-1, -1, 1), // [2]    "
+		vec3f( 1, -1, 1), // [3]    "
+		vec3f(0, 0, 0),   // [4] origin
+		vec3f(0, 0, 0)    // [5] intersection frustum/vec(0,1,0); will be calculated
 	};
 
 	matrix44 m;
 	m.ident();
-	// m.rotate_z(sin(rotation.y*3)*0.3);
 	m.rotate_x(rotation.x);
 	m.rotate_y(rotation.y);
-	// m.translate(vector3(4,2,0));
-	m.translate(vector3(3, 2, 0));
 
 	// Transform frustum
 	for (int i = 0; i < 5; i++)
@@ -288,10 +285,6 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 		p_ofs_min[3] = p_no[6].y;
 		p_ofs_max[3] = p_no[7].y;
 	}
-
-	// Main Loop
-
-	p4 = p[4];
 
 	visible_rays = res[0] + res[1] + res[2] + res[3];
 

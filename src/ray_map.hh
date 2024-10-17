@@ -23,7 +23,6 @@ struct RayMap
 	int nummaps;
 	int maxres;
 	int res[4];
-	vec3f p4;
 	vec3f p_2d[8];
 	vec3f p_no[8];
 	matrix44 to3d;

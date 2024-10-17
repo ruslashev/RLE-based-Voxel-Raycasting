@@ -152,7 +152,7 @@ struct Render
 			p1_3d = MatMul(to3d, p1m4);
 			p2_3d = MatMul(to3d, p2m4);
 
-			vec3f delta = (p1_3d + p2_3d) * 0.5 - ray_map.p4;
+			vec3f delta = (p1_3d + p2_3d) * 0.5; // - origin
 			delta.y = 0;
 			delta = normalize(delta);
 			vec3f_rot_y(viewrot.y, delta);
