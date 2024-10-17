@@ -138,7 +138,7 @@ const char* glShader::getLinkerLog(void)
 			free(linker_log);
 			linker_log = 0;
 		}
-		if ((linker_log = (GLcharARB*)malloc(blen)) == NULL) {
+		if ((linker_log = (char*)malloc(blen)) == NULL) {
 			printf("ERROR: Could not allocate compiler_log buffer\n");
 			return aGLSLStrings[3];
 		}
@@ -402,7 +402,7 @@ void glShader::setUniformMatrix4fv(const char* varname, GLsizei count, GLboolean
 	check_gl_err();
 }
 
-GLint glShader::GetUniLoc(const GLcharARB* name)
+GLint glShader::GetUniLoc(const char* name)
 {
 	GLint loc = glGetUniformLocation(ProgramObject, name);
 
@@ -570,7 +570,7 @@ const char* glShaderObject::getCompilerLog(void)
 			free(compiler_log);
 			compiler_log = 0;
 		}
-		if ((compiler_log = (GLcharARB*)malloc(blen)) == NULL) {
+		if ((compiler_log = (char*)malloc(blen)) == NULL) {
 			printf("ERROR: Could not allocate compiler_log buffer\n");
 			return aGLSLStrings[3];
 		}
@@ -592,10 +592,10 @@ bool glShaderObject::compile(void)
 		return false;
 
 	GLint length = (GLint)strlen((const char*)ShaderSource);
-	glShaderSourceARB(ShaderObject, 1, (const GLcharARB**)&ShaderSource, &length);
+	glShaderSource(ShaderObject, 1, (const char**)&ShaderSource, &length);
 	check_gl_err();
 
-	glCompileShaderARB(ShaderObject);
+	glCompileShader(ShaderObject);
 	check_gl_err();
 	glGetObjectParameterivARB(ShaderObject, GL_COMPILE_STATUS, &compiled);
 	check_gl_err();
@@ -608,7 +608,7 @@ bool glShaderObject::compile(void)
 
 GLint glShaderObject::getAttribLocation(char* attribName)
 {
-	return glGetAttribLocationARB(ShaderObject, attribName);
+	return glGetAttribLocation(ShaderObject, attribName);
 }
 
 aVertexShader::aVertexShader()

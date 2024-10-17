@@ -44,7 +44,6 @@ struct GL_Main
 
 	// Texture functions
 	void createTexture(GLuint* tex_name, unsigned int size_x, unsigned int size_y, int bpp = 32);
-	void createFloatTexture(GLuint* tex_name, unsigned int size_x, unsigned int size_y);
 	void deleteTexture(GLuint* tex);
 
 	static void get_error()
@@ -88,21 +87,21 @@ public:
 	{
 		if (color_tex != -1) {
 			// destroy objects
-			glDeleteRenderbuffersEXT(1, &dbo);
+			glDeleteRenderbuffers(1, &dbo);
 			glDeleteTextures(1, (GLuint*)&color_tex);
 			glDeleteTextures(1, (GLuint*)&depth_tex);
-			glDeleteFramebuffersEXT(1, &fbo);
+			glDeleteFramebuffers(1, &fbo);
 		}
 	}
 
 	void enable()
 	{
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
-		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, dbo);
-		glFramebufferTexture2DEXT(
-				GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, color_tex, 0);
-		glFramebufferTexture2DEXT(
-				GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depth_tex, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+		glBindRenderbuffer(GL_RENDERBUFFER, dbo);
+		glFramebufferTexture2D(
+				GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color_tex, 0);
+		glFramebufferTexture2D(
+				GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_tex, 0);
 
 		glGetIntegerv(GL_VIEWPORT, tmp_viewport);
 		glViewport(0, 0, width, height);
@@ -110,8 +109,8 @@ public:
 
 	void disable()
 	{
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		glViewport(tmp_viewport[0], tmp_viewport[1], tmp_viewport[2], tmp_viewport[3]);
 	}
 
@@ -120,8 +119,8 @@ public:
 		this->width = texWidth;
 		this->height = texHeight;
 
-		glGenFramebuffersEXT(1, &fbo);
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+		glGenFramebuffers(1, &fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 		get_error();
 
 		// init texture
@@ -134,12 +133,12 @@ public:
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glFramebufferTexture2DEXT(
-				GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, color_tex, 0);
+		glFramebufferTexture2D(
+				GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color_tex, 0);
 		get_error();
 
-		glGenRenderbuffersEXT(1, &dbo);
-		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, dbo);
+		glGenRenderbuffers(1, &dbo);
+		glBindRenderbuffer(GL_RENDERBUFFER, dbo);
 
 		glGenTextures(1, (GLuint*)&depth_tex);
 		glBindTexture(GL_TEXTURE_2D, depth_tex);
@@ -153,19 +152,19 @@ public:
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, texWidth, texHeight, 0,
 				GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-		glFramebufferTexture2DEXT(
-				GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depth_tex, 0);
+		glFramebufferTexture2D(
+				GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_tex, 0);
 		get_error();
 
 		// don't leave this texture bound or fbo (zero) will use it as src,
-		// want to use it just as dest GL_DEPTH_ATTACHMENT_EXT
-		glBindTexture( GL_TEXTURE_2D, 0);
+		// want to use it just as dest GL_DEPTH_ATTACHMENT
+		glBindTexture(GL_TEXTURE_2D, 0);
 		get_error();
 
 		check_framebuffer_status();
 
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	}
 
 private:
@@ -185,15 +184,15 @@ private:
 	void check_framebuffer_status()
 	{
 		GLenum status;
-		status = (GLenum)glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+		status = (GLenum)glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		switch (status) {
-		case GL_FRAMEBUFFER_COMPLETE_EXT:
+		case GL_FRAMEBUFFER_COMPLETE:
 			return;
 			break;
-		case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
+		case GL_FRAMEBUFFER_UNSUPPORTED:
 			printf("Unsupported framebuffer format\n");
 			break;
-		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
+		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
 			printf("Framebuffer incomplete, missing attachment\n");
 			break;
 		case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
@@ -202,10 +201,10 @@ private:
 		case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
 			printf("Framebuffer incomplete, attached images must have same format\n");
 			break;
-		case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
+		case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
 			printf("Framebuffer incomplete, missing draw buffer\n");
 			break;
-		case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
+		case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
 			printf("Framebuffer incomplete, missing read buffer\n");
 			break;
 		case 0:

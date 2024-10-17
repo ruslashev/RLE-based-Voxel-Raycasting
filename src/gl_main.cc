@@ -168,24 +168,6 @@ void GL_Main::createTexture(GLuint* tex_name, unsigned int size_x, unsigned int 
 	get_error();
 }
 
-void GL_Main::createFloatTexture(GLuint* tex_name, unsigned int size_x, unsigned int size_y)
-{
-	// create a tex as attachment
-	glGenTextures(1, tex_name);
-	glBindTexture(GL_TEXTURE_2D, *tex_name);
-
-	// set basic parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	// buffer data
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE32F_ARB, size_x, size_y, 0, GL_LUMINANCE, GL_FLOAT, NULL);
-
-	get_error();
-}
-
 void GL_Main::reshape_static(int w, int h)
 {
 	screen.window_width = w;
