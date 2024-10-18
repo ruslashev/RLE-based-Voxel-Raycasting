@@ -2,7 +2,6 @@
 
 RayMap::RayMap()
 {
-	map_line_limit = 2500;
 	border = 0;
 	clip_min = border;
 	clip_max = 1 - clip_min;
@@ -13,11 +12,6 @@ void RayMap::set_border(float a)
 	border = a;
 	clip_min = border;
 	clip_max = 1 - clip_min;
-}
-
-void RayMap::set_ray_limit(int a)
-{
-	map_line_limit = a;
 }
 
 static inline float angle(const vec3f& a, const vec3f& b)
@@ -87,12 +81,10 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 
 	// Calc Lines
 
-	int visible_rays = 0;
 	int safety = 2;
 	float ys_min = border;
 	float ys_max = 1 - border;
 
-	map_line_count = 0;
 	maxres = RAYS_CASTED_RES / 4; // RAYS_CASTED/4;
 
 	vec3f plist[4] = {
@@ -144,8 +136,8 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 
 		if (p_no[0].x - p_no[1].x > 0)
 			res[0] = 0;
-		if (res[0] > (maxres * 3))
-			res[0] = (maxres * 3);
+		if (res[0] > maxres * 3)
+			res[0] = maxres * 3;
 
 		p_ofs_min[0] = p_no[0].x;
 	}
@@ -182,8 +174,8 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 
 		if (p_no[2].x - p_no[3].x > 0)
 			res[1] = 0;
-		if (res[1] > (maxres * 3))
-			res[1] = (maxres * 3);
+		if (res[1] > maxres * 3)
+			res[1] = maxres * 3;
 
 		p_ofs_min[1] = p_no[2].x;
 	}
@@ -224,8 +216,8 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 
 		if (p_no[4].y - p_no[5].y > 0)
 			res[2] = 0;
-		if (res[2] > (maxres * 3))
-			res[2] = (maxres * 3);
+		if (res[2] > maxres * 3)
+			res[2] = maxres * 3;
 
 		p_ofs_min[2] = p_no[4].y;
 	}
@@ -268,13 +260,11 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 
 		if (p_no[6].y - p_no[7].y > 0)
 			res[3] = 0;
-		if (res[3] > (maxres * 3))
-			res[3] = (maxres * 3);
+		if (res[3] > maxres * 3)
+			res[3] = maxres * 3;
 
 		p_ofs_min[3] = p_no[6].y;
 	}
 
-	visible_rays = res[0] + res[1] + res[2] + res[3];
-
-	map_line_count = visible_rays;
+	total_rays = res[0] + res[1] + res[2] + res[3];
 }

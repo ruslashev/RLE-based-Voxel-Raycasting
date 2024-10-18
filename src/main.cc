@@ -114,7 +114,6 @@ static void update_viewpoint()
 static void compute_ray_map()
 {
 	ray_map.set_border(0.125);
-	ray_map.set_ray_limit(RAYS_CASTED_RES);
 	ray_map.get_ray_map(screen.pos, screen.rot);
 }
 
@@ -308,7 +307,7 @@ static void display()
 		HCOL += 15;
 		renderText(VCOL, HCOL, BITMAP_FONT_TYPE_HELVETICA_12, text);
 
-		sprintf(text, "Rays: %d RenderTarget:%d", ray_map.map_line_count, RENDER_SIZE);
+		sprintf(text, "Rays: %d RenderTarget: %d", ray_map.total_rays, RENDER_SIZE);
 		HCOL += 15;
 		renderText(VCOL, HCOL, BITMAP_FONT_TYPE_HELVETICA_12, text);
 

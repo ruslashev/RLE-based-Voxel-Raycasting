@@ -135,8 +135,7 @@ struct Render
 			if (quadrant >= 1)
 				quadrant_ofs -= rays[quadrant - 1];
 
-			float quadrant_num = ray_map.res[quadrant];
-			float a = quadrant_ofs / quadrant_num;
+			float a = quadrant_ofs / ray_map.res[quadrant];
 
 			int j = quadrant;
 
@@ -661,10 +660,7 @@ void cuda_main_render2(int pbo_out, int width, int height, RayMap* raymap)
 		while (1) {}
 	}
 
-	int lines_to_raycast = raymap->map_line_count;
-	int thread_calls = ((raymap->map_line_count / 2) | (THREAD_COUNT - 1)) + 1;
-	if (lines_to_raycast > RAYS_CASTED)
-		lines_to_raycast = RAYS_CASTED;
+	int thread_calls = ((raymap->total_rays / 2) | (THREAD_COUNT - 1)) + 1;
 
 	int* out_data;
 	CUDA_SAFE_CALL(cudaGLMapBufferObject((void**)&out_data, pbo_out));
@@ -683,7 +679,7 @@ void cuda_main_render2(int pbo_out, int width, int height, RayMap* raymap)
 
 	cuda_render<<<grid, threads, 16300>>>(
 			render_gpu,
-			render.ray_map.map_line_count,
+			render.ray_map.total_rays,
 			render.ray_map.position,
 			render.ray_map.rotation,
 			render.res_x,

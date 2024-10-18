@@ -12,8 +12,7 @@
 
 struct RayMap
 {
-	int map_line_count;
-	int map_line_limit;
+	int total_rays;
 	vec3f rotation; // Frustum orientation
 	vec3f position; // Frustum position
 	float border;
@@ -29,6 +28,5 @@ struct RayMap
 
 	RayMap();
 	void set_border(float a);
-	void set_ray_limit(int a);
 	void get_ray_map(vec3f pos, vec3f rot);
 };
