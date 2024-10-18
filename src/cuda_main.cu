@@ -123,33 +123,30 @@ struct Render
 			rays[2] = ray_map.res[2] + rays[1];
 			rays[3] = ray_map.res[3] + rays[2];
 
-			int quadrant = 0;
+			int q = 0;
 			if (x >= rays[2])
-				quadrant = 3;
+				q = 3;
 			else if (x >= rays[1])
-				quadrant = 2;
+				q = 2;
 			else if (x >= rays[0])
-				quadrant = 1;
+				q = 1;
 
 			float quadrant_ofs = x;
-			if (quadrant >= 1)
-				quadrant_ofs -= rays[quadrant - 1];
+			if (q >= 1)
+				quadrant_ofs -= rays[q - 1];
 
-			float a = quadrant_ofs / ray_map.res[quadrant];
+			float a = quadrant_ofs / ray_map.res[q];
 
-			int j = quadrant;
-
-			vec3f p1, p2, p1_3d, p2_3d;
-			p1 = ray_map.vp;
-			p2 = ray_map.p_no[j * 2] + (ray_map.p_no[j * 2 + 1] - ray_map.p_no[j * 2]) * a;
+			vec3f p1 = ray_map.vp;
+			vec3f p2 = ray_map.p_no[q * 2] + (ray_map.p_no[q * 2 + 1] - ray_map.p_no[q * 2]) * a;
 
 			ClipLine(p1, p2, ray_map.clip_max, ray_map.clip_min);
 
 			matrix44 to3d = ray_map.to3d;
 			vec3f p1m4 = p1 * 4.0;
 			vec3f p2m4 = p2 * 4.0;
-			p1_3d = MatMul(to3d, p1m4);
-			p2_3d = MatMul(to3d, p2m4);
+			vec3f p1_3d = MatMul(to3d, p1m4);
+			vec3f p2_3d = MatMul(to3d, p2m4);
 
 			vec3f delta = (p1_3d + p2_3d) * 0.5; // - origin
 			delta.y = 0;
@@ -162,7 +159,7 @@ struct Render
 			ml_end2d = p2;
 			ml_start3d = p1_3d;
 			ml_end3d = p2_3d;
-			ml_direction_y = 1 - (j >> 1);
+			ml_direction_y = 1 - (q >> 1);
 		}
 
 		// Initialize Render Vars
