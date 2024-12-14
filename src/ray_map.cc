@@ -44,7 +44,7 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 	m.rotate_y(rotation.y);
 
 	// Transform frustum
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 4; i++)
 		frustum[i] = m * frustum[i];
 
 	// Calculate vanishing point
@@ -57,18 +57,16 @@ void RayMap::get_ray_map(vec3f pos, vec3f rot)
 
 	// Calc. matrix to transform frustum into 2D (xy-plane)
 
-	matrix44 to2d;
-	vec3f nrm = (frustum[1] - frustum[0]) * (frustum[3] - frustum[0]);
-
 	vec3f d1 = frustum[1] - frustum[0];
 	vec3f d2 = frustum[3] - frustum[0];
-	vec3f d3 = nrm;
+	vec3f d3 = (frustum[1] - frustum[0]) * (frustum[3] - frustum[0]);
 	vec3f d4 = frustum[0];
 
 	d1 *= 1 / d1.dot(d1);
 	d2 *= 1 / d2.dot(d2);
 	d3 *= 1 / d3.dot(d3);
 
+	matrix44 to2d;
 	to2d.ident();
 	to2d.set(d1, d2, d3, d4);
 	to3d = to2d;
