@@ -146,26 +146,18 @@ static void display_pbo()
 	glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, 0);
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 
-	static glShader* shader_soft = 0;
 	static glShader* shader_colorize = 0;
 
 	glFlush();
-
-	if (!shader_soft)
-		shader_soft = shader_manager.loadfromFile("shader/soft.vert", "shader/soft.frag");
 
 	if (!shader_colorize)
 		shader_colorize = shader_manager.loadfromFile(
 			"shader/colorize_buddha_soft.vert", "shader/colorize_buddha_soft.frag"
 		);
 
-	static FBO fbo1(2048, 2048);
-
-	FBO* fbo = &fbo1;
-
-	fbo->enable();
 	glDisable(GL_DEPTH_TEST);
 	glDepthMask(false);
+	glViewport(0, 0, screen.window_width, screen.window_height);
 
 	glBindTexture(GL_TEXTURE_2D, tex_screen);
 
@@ -174,12 +166,8 @@ static void display_pbo()
 	glEnable(GL_TEXTURE_2D);
 
 	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
 	glLoadIdentity();
 	glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	float border = ray_map.border;
 
@@ -209,54 +197,16 @@ static void display_pbo()
 			RAYS_CASTED,
 			float(RAYS_CASTED_RES) / float(RAYS_CASTED));
 
-	float vright = 2.0 * float(screen.window_width) / 2048.0 - 1.0;
-	float vdown = 2.0 * float(screen.window_height) / 2048.0 - 1.0;
-	float tright = 1.0 * float(screen.window_width) / 2048.0;
-	float tdown = 1.0 * float(screen.window_height) / 2048.0;
-
 	glDisable(GL_BLEND);
 	glBegin(GL_QUADS);
 	glColor4f(1, 1, 1, 1);
 	glVertex3f(    -1,    -1, 0.5);
-	glVertex3f(vright,    -1, 0.5);
-	glVertex3f(vright, vdown, 0.5);
-	glVertex3f(    -1, vdown, 0.5);
+	glVertex3f(     1,    -1, 0.5);
+	glVertex3f(     1,     1, 0.5);
+	glVertex3f(    -1,     1, 0.5);
 	glEnd();
 
 	shader_colorize->end();
-
-	fbo->disable();
-
-	glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, 0);
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
-
-	glDisable(GL_DEPTH_TEST);
-	glViewport(0, 0, screen.window_width, screen.window_height);
-
-	glActiveTextureARB(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, rndtex);
-
-	glActiveTextureARB(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, fbo->color_tex);
-
-	shader_soft->begin();
-	shader_soft->setUniform1i("texDecal", 0);
-	glDisable(GL_BLEND);
-	glBegin(GL_QUADS);
-	glColor4f(1, 1, 1, 1);
-	glTexCoord2f(0,      0);     glVertex3f(-1, -1,  1);
-	glTexCoord2f(tright, 0);     glVertex3f( 1, -1,  1);
-	glTexCoord2f(tright, tdown); glVertex3f( 1,  1,  1);
-	glTexCoord2f(0,      tdown); glVertex3f(-1,  1,  1);
-	glEnd();
-	shader_soft->end();
-
-	glActiveTextureARB(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glActiveTextureARB(GL_TEXTURE0);
-
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
 
 	glDisable(GL_TEXTURE_2D);
 
