@@ -21,29 +21,9 @@ void main(void)
 	float scx1 = xs - vp.x;
 	float scy1 = ys - vp.y;
 
-	// float upper = step(scy1, 0.);
-	float upper;
-	if (ys < vp.y) {
-		upper = 1.;
-	} else {
-		upper = 0.;
-	}
-
-	// float left = step(scx1, 0.);
-	float left;
-	if (xs < vp.x) {
-		left = 1.;
-	} else {
-		left = 0.;
-	}
-
-	// float wide = step(abs(scy1) - abs(scx1) * RESX / RESY, 0.);
-	float wide;
-	if (abs(xs - vp.x) * RESX > abs(ys - vp.y) * RESY) {
-		wide = 1.;
-	} else {
-		wide = 0.;
-	}
+	float upper = float(ys < vp.y);
+	float left = float(xs < vp.x);
+	float wide = float(abs(xs - vp.x) * RESX > abs(ys - vp.y) * RESY);
 
 	float seg_up = (1. - upper) * (1. - wide);
 	float seg_dn =       upper  * (1. - wide);
