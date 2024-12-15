@@ -85,50 +85,13 @@ void main(void)
 	           seg_rt_x * (     o2) +
 	           seg_lt_x * (1. - o2);
 
-	vec4 c_out = vec4(0);
-	float fragz = 0.;
-
 	vec4 c = texture2D(texDecal, texpos);
 
 	if (c.z != 1.) {
-		float z = (c.z * (1. / 256.) + c.w);
-		fragz = 0.001 / z;
-		float pos3dx = z * (xs * 2. - 1.);
-		float pos3dy = z * (ys * 2. - 1.);
-
-		vec3 nrm;
-		nrm.x = c.r;
-		nrm.y = c.g;
-		nrm.z = min(1.0, nrm.x + nrm.y);
-
-		nrm = 2.0 * nrm - vec3(1.0);
-		nrm.z = sqrt(1. - c.r * c.r - c.g * c.g);
-		nrm = normalize(nrm);
-
-		vec3 lgt;
-		lgt.x = pos3dx;
-		lgt.y = pos3dy;
-		lgt.z = z;
-		lgt.x = lgt.x - 30.;
-		lgt.y = lgt.y + 25.;
-		lgt = normalize(lgt);
-
-		float light = (1. - c.g) + c.r * 0.3 - 0.5;
-
-		c.x = light;
-		c.y = light;
-		c.z = light;
-
-		vec4 pow4 = (max(c, 0.) * max(c, 0.) * max(c, 0.) * max(c, 0.));
-
-		c = c * vec4(1.3, 0.9, 0.7, 1.0) + 1.2 * pow4 * vec4(1.2, 1.2, 1.2, 1.0);
+		vec3 light = vec3((1. - c.y) + c.x * 0.3 - 0.5);
+		gl_FragColor = vec4(light, 1.);
 	} else {
 		// sky
-		c = vec4(178. / 255., 204. / 255., 1., 1.);
+		gl_FragColor = vec4(178. / 255., 204. / 255., 1., 1.);
 	}
-
-	c_out += c;
-
-	c_out.w = fragz;
-	gl_FragColor = c_out;
 }
