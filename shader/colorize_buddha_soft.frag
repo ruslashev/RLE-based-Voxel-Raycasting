@@ -21,26 +21,26 @@ void main(void)
 	float scx1 = xs - vp.x;
 	float scy1 = ys - vp.y;
 
-	float upper = float(ys < vp.y);
+	float high = float(ys < vp.y);
 	float left = float(xs < vp.x);
 	float wide = float(abs(xs - vp.x) * RESX > abs(ys - vp.y) * RESY);
 
-	float seg_up = (1. - upper) * (1. - wide);
-	float seg_dn =       upper  * (1. - wide);
-	float seg_rt = (1. - left ) *       wide ;
-	float seg_lt =       left   *       wide ;
+	float seg_up = (1. - high) * (1. - wide);
+	float seg_dn =       high  * (1. - wide);
+	float seg_rt = (1. - left) *       wide ;
+	float seg_lt =       left  *       wide ;
 
 	float o2 = (wide * gl_FragCoord.x + (1. - wide) * gl_FragCoord.y) / RESX;
 
 	float ang2 =
-		(xs - vp.x)  * abs(1. - upper - vp.y) / (ys - vp.y) +
-		upper        * (1. - vp.x) +
-		(1. - upper) * (vp.x);
+		(xs - vp.x) * abs(1. - high - vp.y) / (ys - vp.y) +
+		high        * (1. - vp.x) +
+		(1. - high) * vp.x;
 
 	float ang3 =
 		(ys - vp.y) * abs(1. - left - vp.x) / (xs - vp.x) +
 		left        * (1. - vp.y) +
-		(1. - left) * (vp.y);
+		(1. - left) * vp.y;
 
 	ang3 = ang3 * RESY / RESX + border;
 
