@@ -487,7 +487,7 @@ glShaderObject::~glShaderObject()
 	}
 
 	if (is_compiled) {
-		glDeleteObjectARB(ShaderObject);
+		glDeleteShader(ShaderObject);
 		check_gl_err();
 	}
 }
@@ -575,7 +575,7 @@ const char* glShaderObject::getCompilerLog(void)
 			return aGLSLStrings[3];
 		}
 
-		glGetInfoLogARB(ShaderObject, blen, &slen, compiler_log);
+		glGetShaderInfoLog(ShaderObject, blen, &slen, compiler_log);
 		check_gl_err();
 	}
 
@@ -597,7 +597,7 @@ bool glShaderObject::compile(void)
 
 	glCompileShader(ShaderObject);
 	check_gl_err();
-	glGetObjectParameterivARB(ShaderObject, GL_COMPILE_STATUS, &compiled);
+	glGetShaderiv(ShaderObject, GL_COMPILE_STATUS, &compiled);
 	check_gl_err();
 
 	if (compiled)
@@ -614,7 +614,7 @@ GLint glShaderObject::getAttribLocation(char* attribName)
 aVertexShader::aVertexShader()
 {
 	program_type = 1;
-	ShaderObject = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+	ShaderObject = glCreateShader(GL_VERTEX_SHADER);
 	check_gl_err();
 }
 
@@ -623,7 +623,7 @@ aVertexShader::~aVertexShader() { }
 aFragmentShader::aFragmentShader()
 {
 	program_type = 2;
-	ShaderObject = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
+	ShaderObject = glCreateShader(GL_FRAGMENT_SHADER);
 	check_gl_err();
 }
 

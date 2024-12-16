@@ -26,7 +26,7 @@ protected:
 	GLuint ShaderObject; //!< Program Object
 	GLubyte* ShaderSource; //!< ASCII Source-Code
 
-	GLcharARB* compiler_log;
+	char* compiler_log;
 
 	bool is_compiled; //!< true if compiled
 	bool _memalloc; //!< true if shader allocated memory
@@ -96,11 +96,11 @@ public:
 	void disable(void) { enabled = false; }
 
 private:
-	GLint GetUniLoc(const GLcharARB* name); // get location of a variable
+	GLint GetUniLoc(const char* name); // get location of a variable
 
 	GLuint ProgramObject; // GLProgramObject
 
-	GLcharARB* linker_log;
+	char* linker_log;
 	bool is_linked;
 	std::vector<glShaderObject*> ShaderList; // List of all Shader Programs
 

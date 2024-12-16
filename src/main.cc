@@ -133,7 +133,7 @@ static void render_to_pbo()
 	// blit convolved texture onto the screen
 
 	// download texture from PBO
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, pbo_dest);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo_dest);
 	glBindTexture(GL_TEXTURE_2D, tex_screen);
 
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, RENDER_SIZE, RAYS_CASTED, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -143,8 +143,7 @@ static void render_to_pbo()
 
 static void display_pbo()
 {
-	glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, 0);
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
 	static glShader* shader_colorize = 0;
 
