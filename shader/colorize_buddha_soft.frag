@@ -1,5 +1,3 @@
-#extension GL_EXT_gpu_shader4 : enable
-
 uniform sampler2D texDecal;
 uniform float rot_x_gt0;
 uniform vec2 vp;
@@ -9,17 +7,13 @@ uniform vec4 res_x_y_ray_ratio;
 
 void main(void)
 {
-	float RESX   = res_x_y_ray_ratio.x;
-	float RESY   = res_x_y_ray_ratio.y;
-	float MAXRAY = res_x_y_ray_ratio.z;
+	float RESX = res_x_y_ray_ratio.x;
+	float RESY = res_x_y_ray_ratio.y;
 
 	float xs = gl_FragCoord.x / RESX;
 	float ys = gl_FragCoord.y / RESY;
 
 	float border = (RESX - RESY) / (RESX * 2.);
-
-	float scx1 = xs - vp.x;
-	float scy1 = ys - vp.y;
 
 	float high = float(ys < vp.y);
 	float left = float(xs < vp.x);
