@@ -20,6 +20,11 @@ void main(void)
 	float seg_rt = (1. - left) *       wide ;
 	float seg_lt =       left  *       wide ;
 
+	float nseg_up = lookdown * seg_up + (1. - lookdown) * seg_dn;
+	float nseg_dn = lookdown * seg_dn + (1. - lookdown) * seg_up;
+	float nseg_rt = lookdown * seg_rt + (1. - lookdown) * seg_lt;
+	float nseg_lt = lookdown * seg_lt + (1. - lookdown) * seg_rt;
+
 	float o2 = (wide * gl_FragCoord.x + (1. - wide) * gl_FragCoord.y) / res.x;
 
 	float ang2 =
@@ -36,7 +41,7 @@ void main(void)
 
 	float x_pre = ang3 * wide + ang2 * (1. - wide);
 
-	vec2 texpos = vec2(0);
+	vec2 texpos;
 
 	texpos.y = seg_up * (1. - x_pre + ofs_add.x) +
 	           seg_dn * (     x_pre + ofs_add.y) +
@@ -44,11 +49,6 @@ void main(void)
 	           seg_lt * (     x_pre + ofs_add.w);
 
 	texpos.y *= 0.25;
-
-	float nseg_up = lookdown * seg_up + (1.0 - lookdown) * seg_dn;
-	float nseg_dn = lookdown * seg_dn + (1.0 - lookdown) * seg_up;
-	float nseg_rt = lookdown * seg_rt + (1.0 - lookdown) * seg_lt;
-	float nseg_lt = lookdown * seg_lt + (1.0 - lookdown) * seg_rt;
 
 	texpos.x = nseg_up * (     o2 + border) +
 	           nseg_dn * (1. - o2 - border) +
