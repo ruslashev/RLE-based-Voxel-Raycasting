@@ -53,6 +53,7 @@ int main(int argc, char** argv)
 	printf("ready.\n");
 
 	screen.pos = vec3f(10000, -818, 10000);
+	screen.rot = vec3f(1, 0, 0);
 
 #ifdef CLIPREGION
 	screen.pos.x = -632;

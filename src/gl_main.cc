@@ -91,6 +91,7 @@ void GL_Main::Init(int window_width, int window_height, bool fullscreen, void (*
 {
 	screen.window_width = window_width;
 	screen.window_height = window_height;
+	screen.fullscreen = fullscreen;
 
 	int nop = 1;
 	const char* headline = "CUDA Voxel Demo";
