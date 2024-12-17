@@ -1,5 +1,5 @@
 uniform sampler2D texDecal;
-uniform float rot_x_gt0;
+uniform float lookdown;
 uniform vec2 vp;
 uniform vec4 ofs_add;
 
@@ -49,15 +49,15 @@ void main(void)
 
 	texpos.y *= res_x_y_ray_ratio.w * 0.25;
 
-	float seg_up_x = rot_x_gt0 * seg_up + (1.0 - rot_x_gt0) * seg_dn;
-	float seg_dn_x = rot_x_gt0 * seg_dn + (1.0 - rot_x_gt0) * seg_up;
-	float seg_rt_x = rot_x_gt0 * seg_rt + (1.0 - rot_x_gt0) * seg_lt;
-	float seg_lt_x = rot_x_gt0 * seg_lt + (1.0 - rot_x_gt0) * seg_rt;
+	float nseg_up = lookdown * seg_up + (1.0 - lookdown) * seg_dn;
+	float nseg_dn = lookdown * seg_dn + (1.0 - lookdown) * seg_up;
+	float nseg_rt = lookdown * seg_rt + (1.0 - lookdown) * seg_lt;
+	float nseg_lt = lookdown * seg_lt + (1.0 - lookdown) * seg_rt;
 
-	texpos.x = seg_up_x * (     o2 + border) +
-	           seg_dn_x * (1. - o2 - border) +
-	           seg_rt_x * (     o2) +
-	           seg_lt_x * (1. - o2);
+	texpos.x = nseg_up * (     o2 + border) +
+	           nseg_dn * (1. - o2 - border) +
+	           nseg_rt * (     o2) +
+	           nseg_lt * (1. - o2);
 
 	vec4 c = texture2D(texDecal, texpos);
 

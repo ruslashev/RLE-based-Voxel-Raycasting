@@ -183,8 +183,7 @@ private:
 
 	void check_framebuffer_status()
 	{
-		GLenum status;
-		status = (GLenum)glCheckFramebufferStatus(GL_FRAMEBUFFER);
+		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		switch (status) {
 		case GL_FRAMEBUFFER_COMPLETE:
 			return;
