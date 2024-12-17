@@ -99,8 +99,8 @@ struct Render
 			int res_y,
 			ushort* ofs_skip_start)
 	{
-		float res_x2 = res_x / 2;
-		float res_y2 = res_y / 2;
+		float res_x2 = (float)res_x / 2.;
+		float res_y2 = (float)res_y / 2.;
 		uint* ofs_rgb_start = (uint*)&data_rgb[x * res_y];
 		uint* ofs_cache_start = ((uint*)ofs_skip_start) + x * res_y;
 
@@ -140,7 +140,10 @@ struct Render
 			vec3f p1 = ray_map.vp;
 			vec3f p2 = ray_map.p_no[q * 2] + (ray_map.p_no[q * 2 + 1] - ray_map.p_no[q * 2]) * a;
 
-			ClipLine(p1, p2, ray_map.clip_max, ray_map.clip_min);
+			float clip_min = ray_map.border;
+			float clip_max = 1. - ray_map.border;
+
+			ClipLine(p1, p2, clip_max, clip_min);
 
 			matrix44 to3d = ray_map.to3d;
 			vec3f p1m4 = p1 * 4.0;

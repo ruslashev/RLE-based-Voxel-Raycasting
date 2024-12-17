@@ -3,15 +3,11 @@
 RayMap::RayMap()
 {
 	border = 0;
-	clip_min = border;
-	clip_max = 1 - clip_min;
 }
 
 void RayMap::set_border(float a)
 {
 	border = a;
-	clip_min = border;
-	clip_max = 1 - clip_min;
 }
 
 static inline float angle(const vec3f& a, const vec3f& b)

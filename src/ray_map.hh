@@ -16,7 +16,6 @@ struct RayMap
 	vec3f rotation; // Frustum orientation
 	vec3f position; // Frustum position
 	float border;
-	float clip_min, clip_max;
 	Map4 map4_gpu[16];
 	int nummaps;
 	int maxres;
