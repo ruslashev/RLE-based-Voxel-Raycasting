@@ -190,11 +190,7 @@ static void display_pbo()
 			-ray_map.p_ofs_min[2] + ofs2,
 			-ray_map.p_ofs_min[3] + ofs3);
 
-	shader_colorize->setUniform4f("res_x_y_ray_ratio",
-			screen.window_width,
-			screen.window_height,
-			RAYS_CASTED,
-			float(RAYS_CASTED_RES) / float(RAYS_CASTED));
+	shader_colorize->setUniform2f("res", screen.window_width, screen.window_height);
 
 	glDisable(GL_BLEND);
 	glBegin(GL_QUADS);
