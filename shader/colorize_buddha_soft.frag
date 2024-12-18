@@ -40,14 +40,12 @@ void main(void)
 
 	ang_horz = ang_horz * ratio + border;
 
-	float x_pre = ang_horz * wide + ang_vert * (1. - wide);
-
 	vec2 texpos;
 
-	texpos.y = seg_up * (1. - x_pre + ofs_add.x) +
-	           seg_dn * (     x_pre + ofs_add.y) +
-	           seg_rt * (1. - x_pre + ofs_add.z) +
-	           seg_lt * (     x_pre + ofs_add.w);
+	texpos.y = seg_up * (1. - ang_vert + ofs_add.x) +
+	           seg_dn * (     ang_vert + ofs_add.y) +
+	           seg_rt * (1. - ang_horz + ofs_add.z) +
+	           seg_lt * (     ang_horz + ofs_add.w);
 
 	texpos.y *= 0.25;
 
