@@ -49,13 +49,12 @@ void main(void)
 
 	texpos.y *= 0.25;
 
-	float overt = ys * ratio + border;
-	float ohorz = xs;
+	ys = ys * ratio + border;
 
-	texpos.x = nseg_up * (     overt) +
-	           nseg_dn * (1. - overt) +
-	           nseg_rt * (     ohorz) +
-	           nseg_lt * (1. - ohorz);
+	texpos.x = nseg_up * (     ys) +
+	           nseg_dn * (1. - ys) +
+	           nseg_rt * (     xs) +
+	           nseg_lt * (1. - xs);
 
 	vec4 c = texture2D(texDecal, texpos);
 
