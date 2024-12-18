@@ -8,13 +8,15 @@ void main(void)
 {
 	float xs = gl_FragCoord.x / res.x;
 	float ys = gl_FragCoord.y / res.y;
+	float xn = xs - vp.x;
+	float yn = ys - vp.y;
 	float ratio = res.y / res.x;
 
 	float border = (1. - ratio) / 2.;
 
-	float high = float(ys < vp.y);
-	float left = float(xs < vp.x);
-	float wide = float(abs(xs - vp.x) * res.x > abs(ys - vp.y) * res.y);
+	float high = float(yn < 0.);
+	float left = float(xn < 0.);
+	float wide = float(abs(xn) * res.x > abs(yn) * res.y);
 
 	float seg_up = (1. - high) * (1. - wide);
 	float seg_dn =       high  * (1. - wide);
@@ -29,12 +31,12 @@ void main(void)
 	float o2 = wide * xs + (1. - wide) * ys * ratio;
 
 	float ang_vert =
-		(xs - vp.x) * abs(1. - high - vp.y) / (ys - vp.y) +
+		xn          * abs(1. - high - vp.y) / yn +
 		high        * (1. - vp.x) +
 		(1. - high) * vp.x;
 
 	float ang_horz =
-		(ys - vp.y) * abs(1. - left - vp.x) / (xs - vp.x) +
+		yn          * abs(1. - left - vp.x) / xn +
 		left        * (1. - vp.y) +
 		(1. - left) * vp.y;
 
@@ -51,10 +53,10 @@ void main(void)
 
 	texpos.y *= 0.25;
 
-	texpos.x = nseg_up * (     o2 + border) +
-	           nseg_dn * (1. - o2 - border) +
-	           nseg_rt * (     o2) +
-	           nseg_lt * (1. - o2);
+	texpos.x = nseg_up * (      o2 + border ) +
+	           nseg_dn * (1. - (o2 + border)) +
+	           nseg_rt * (      o2          ) +
+	           nseg_lt * (1. -  o2          );
 
 	vec4 c = texture2D(texDecal, texpos);
 
