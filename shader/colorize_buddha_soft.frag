@@ -8,8 +8,9 @@ void main(void)
 {
 	float xs = gl_FragCoord.x / res.x;
 	float ys = gl_FragCoord.y / res.y;
+	float ratio = res.y / res.x;
 
-	float border = (res.x - res.y) / (res.x * 2.);
+	float border = (1. - ratio) / 2.;
 
 	float high = float(ys < vp.y);
 	float left = float(xs < vp.x);
@@ -25,7 +26,7 @@ void main(void)
 	float nseg_rt = lookdown * seg_rt + (1. - lookdown) * seg_lt;
 	float nseg_lt = lookdown * seg_lt + (1. - lookdown) * seg_rt;
 
-	float o2 = (wide * gl_FragCoord.x + (1. - wide) * gl_FragCoord.y) / res.x;
+	float o2 = wide * xs + (1. - wide) * ys * ratio;
 
 	float ang2 =
 		(xs - vp.x) * abs(1. - high - vp.y) / (ys - vp.y) +
@@ -37,7 +38,7 @@ void main(void)
 		left        * (1. - vp.y) +
 		(1. - left) * vp.y;
 
-	ang3 = ang3 * res.y / res.x + border;
+	ang3 = ang3 * ratio + border;
 
 	float x_pre = ang3 * wide + ang2 * (1. - wide);
 
