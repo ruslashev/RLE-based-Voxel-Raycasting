@@ -28,8 +28,6 @@ void main(void)
 	float nseg_rt = lookdown * seg_rt + (1. - lookdown) * seg_lt;
 	float nseg_lt = lookdown * seg_lt + (1. - lookdown) * seg_rt;
 
-	float o2 = wide * xs + (1. - wide) * ys * ratio;
-
 	float ang_vert =
 		xn          * abs(1. - high - vp.y) / yn +
 		high        * (1. - vp.x) +
@@ -53,10 +51,13 @@ void main(void)
 
 	texpos.y *= 0.25;
 
-	texpos.x = nseg_up * (      o2 + border ) +
-	           nseg_dn * (1. - (o2 + border)) +
-	           nseg_rt * (      o2          ) +
-	           nseg_lt * (1. -  o2          );
+	float overt = ys * ratio + border;
+	float ohorz = xs;
+
+	texpos.x = nseg_up * (     overt) +
+	           nseg_dn * (1. - overt) +
+	           nseg_rt * (     ohorz) +
+	           nseg_lt * (1. - ohorz);
 
 	vec4 c = texture2D(texDecal, texpos);
 
