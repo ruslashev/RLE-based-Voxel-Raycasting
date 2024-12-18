@@ -28,19 +28,19 @@ void main(void)
 
 	float o2 = wide * xs + (1. - wide) * ys * ratio;
 
-	float ang2 =
+	float ang_vert =
 		(xs - vp.x) * abs(1. - high - vp.y) / (ys - vp.y) +
 		high        * (1. - vp.x) +
 		(1. - high) * vp.x;
 
-	float ang3 =
+	float ang_horz =
 		(ys - vp.y) * abs(1. - left - vp.x) / (xs - vp.x) +
 		left        * (1. - vp.y) +
 		(1. - left) * vp.y;
 
-	ang3 = ang3 * ratio + border;
+	ang_horz = ang_horz * ratio + border;
 
-	float x_pre = ang3 * wide + ang2 * (1. - wide);
+	float x_pre = ang_horz * wide + ang_vert * (1. - wide);
 
 	vec2 texpos;
 
