@@ -182,16 +182,13 @@ void GL_Main::idle_static()
 
 void GL_Main::createPBO(GLuint* pbo, int image_width, int image_height, int bpp)
 {
-	// set up vertex data parameter
-	void* data = malloc(image_width * image_height * (bpp / 8));
-
 	// create buffer object
 	glGenBuffers(1, pbo);
 	glBindBuffer(GL_ARRAY_BUFFER, *pbo);
 
 	// buffer data
-	glBufferData(GL_ARRAY_BUFFER, image_width * image_height * (bpp / 8), data, GL_DYNAMIC_COPY);
-	free(data);
+	glBufferData(GL_ARRAY_BUFFER, image_width * image_height * (bpp / 8), NULL, GL_DYNAMIC_COPY);
+	check_gl_err();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
