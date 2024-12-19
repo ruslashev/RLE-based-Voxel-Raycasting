@@ -122,6 +122,6 @@ private:
 	std::vector<glShader*> _shaderObjectList;
 };
 
-int CheckGLError(const char* file, int line);
+void CheckGLError(const char* file, int line);
 
 #define check_gl_err() CheckGLError(__FILE__, __LINE__)

@@ -17,24 +17,38 @@ const char* aGLSLStrings[] = {
 	"[Empty]"
 };
 
-int CheckGLError(const char* file, int line)
+static const char* err_str(GLenum err)
 {
-	GLenum glErr, glErr2;
-	int retCode = 0;
+	switch (err) {
+	case GL_INVALID_ENUM:                  return "GL_INVALID_ENUM";
+	case GL_INVALID_VALUE:                 return "GL_INVALID_VALUE";
+	case GL_INVALID_OPERATION:             return "GL_INVALID_OPERATION";
+	case GL_STACK_OVERFLOW:                return "GL_STACK_OVERFLOW";
+	case GL_STACK_UNDERFLOW:               return "GL_STACK_UNDERFLOW";
+	case GL_OUT_OF_MEMORY:                 return "GL_OUT_OF_MEMORY";
+	case GL_INVALID_FRAMEBUFFER_OPERATION: return "GL_INVALID_FRAMEBUFFER_OPERATION";
+	case GL_CONTEXT_LOST:                  return "GL_CONTEXT_LOST";
+	default:                               return "unknown";
+	}
+}
 
-	glErr = glErr2 = glGetError();
+void CheckGLError(const char* file, int line)
+{
+	GLenum err, fst;
 
-	while (glErr != GL_NO_ERROR) {
-		cout << "GL Error #" << glErr << " in File " << file << " at line: " << line << endl;
-		retCode = 1;
-		glErr = glGetError();
+	fst = err = glGetError();
+
+	while (err != GL_NO_ERROR) {
+		cout << "OpenGL error"
+		     << " 0x" << std::hex << err << std::dec
+		     << " " << err_str(err)
+		     << " in " << file << ":" << line
+		     << endl;
+		err = glGetError();
 	}
 
-	if (glErr2 != GL_NO_ERROR)
-		while (1)
-			usleep(100 * 1000);
-
-	return 0;
+	if (fst != GL_NO_ERROR)
+		exit(1);
 }
 
 glShader::glShader()
