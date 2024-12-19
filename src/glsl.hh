@@ -108,7 +108,8 @@ private:
 	bool enabled;
 };
 
-class glShaderManager {
+class glShaderManager
+{
 public:
 	glShaderManager();
 	virtual ~glShaderManager();
@@ -120,3 +121,7 @@ public:
 private:
 	std::vector<glShader*> _shaderObjectList;
 };
+
+int CheckGLError(const char* file, int line);
+
+#define check_gl_err() CheckGLError(__FILE__, __LINE__)

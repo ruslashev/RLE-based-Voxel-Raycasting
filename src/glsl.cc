@@ -17,7 +17,7 @@ const char* aGLSLStrings[] = {
 	"[Empty]"
 };
 
-static int CheckGLError(const char* file, int line)
+int CheckGLError(const char* file, int line)
 {
 	GLenum glErr, glErr2;
 	int retCode = 0;
@@ -36,8 +36,6 @@ static int CheckGLError(const char* file, int line)
 
 	return 0;
 }
-
-#define check_gl_err() CheckGLError(__FILE__, __LINE__)
 
 glShader::glShader()
 {
