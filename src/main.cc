@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sstream>
+#include <fstream>
 
 RayMap   ray_map;
 Keyboard keyboard;
@@ -118,6 +120,61 @@ static void compute_ray_map()
 	ray_map.get_ray_map(screen.pos, screen.rot);
 }
 
+static void write_ppm_image(const char *fname, const uint8_t *buf, size_t w, size_t h)
+{
+	std::ostringstream out;
+	size_t i = 0;
+	char pbuf[128];
+
+	out << "P3\n";
+	out << w << " " << h << " 255\n";
+
+	for (size_t y = 0; y < h; ++y) {
+		for (size_t x = 0; x < w; ++x) {
+			uint8_t r = buf[i + 0];
+			uint8_t g = buf[i + 1];
+			uint8_t b = 0; // buf[i + 2];
+
+			snprintf(pbuf, 128, "%d %d %d ", r, g, b);
+
+			out << pbuf;
+			i += 4;
+		}
+
+		out << "\n";
+	}
+
+	std::string output = out.str();
+	std::ofstream outfile(fname, std::ofstream::binary);
+
+	outfile.write(output.c_str(), output.size());
+	outfile.close();
+}
+
+static void debug_print_texture(size_t size_x, size_t size_y)
+{
+	const size_t buf_size = size_x * size_y * 4;
+
+	std::vector<uint8_t> buffer;
+
+	buffer.resize(buf_size);
+
+	glGetnTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf_size, buffer.data());
+	check_gl_err();
+
+	write_ppm_image("buffer.ppm", buffer.data(), size_x, size_y);
+}
+
+static void debug_print_pbo(size_t size_x, size_t size_y)
+{
+	const uint8_t* raw = (uint8_t*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_READ_ONLY);
+	check_gl_err();
+
+	write_ppm_image("buffer.ppm", raw, size_x, size_y);
+
+	glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
+}
+
 static void render_to_pbo()
 {
 	static int render_width = RENDER_SIZE;
@@ -136,6 +193,9 @@ static void render_to_pbo()
 	// download texture from PBO
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo_dest);
 	glBindTexture(GL_TEXTURE_2D, tex_screen);
+
+	if (keyboard.KeyDn('p'))
+		debug_print_pbo(RENDER_SIZE, RAYS_CASTED);
 
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, RENDER_SIZE, RAYS_CASTED, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 

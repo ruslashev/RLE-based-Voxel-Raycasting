@@ -99,6 +99,8 @@ struct Render
 			int res_y,
 			ushort* ofs_skip_start)
 	{
+		// memset(data_rgb, 0, res_x * res_y * 4 * 4);
+
 		float res_x2 = (float)res_x / 2.;
 		float res_y2 = (float)res_y / 2.;
 		uint* ofs_rgb_start = (uint*)&data_rgb[x * res_y];
