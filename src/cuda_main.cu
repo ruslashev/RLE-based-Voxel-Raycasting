@@ -104,11 +104,6 @@ struct Render
 		float res_x2 = (float)res_x / 2.;
 		float res_y2 = (float)res_y / 2.;
 		uint* ofs_rgb_start = (uint*)&data_rgb[x * res_y];
-		uint* ofs_cache_start = ((uint*)ofs_skip_start) + x * res_y;
-
-		ofs_cache_start[0] = 0;
-		uint ofs_cache_count = 0;
-		uint ofs_cache_depth = 0;
 
 		float ml_ray_x;
 		float ml_ray_z;
@@ -318,8 +313,6 @@ struct Render
 		uint tex_map_ofs = 0;
 
 		while (true) {
-			ofs_cache_depth++;
-
 			while (z > mapswitch || y_map_switch > 512.0) {
 				y_map_switch = y_map_switch * 0.5;
 
@@ -672,7 +665,7 @@ void cuda_main_render2(int pbo_out, int width, int height, RayMap* raymap)
 	dim3 threads(THREAD_COUNT, 1, 1);
 	dim3 grid(2, thread_calls / (threads.x), 1);
 
-	render.set_target(width, height, (int*)out_data);
+	render.set_target(width, height, out_data);
 	render.set_raymap(raymap);
 
 	gpu_memcpy(render_gpu, &render, sizeof(Render));
