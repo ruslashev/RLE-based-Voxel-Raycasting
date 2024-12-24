@@ -6,13 +6,16 @@ uniform vec2 res;
 
 void main(void)
 {
+	float ratio = res.y / res.x;
+	float border = (1. - ratio) / 2.;
+
+	vec2 vp = 1. - vp;
+	vp.y = (vp.y - border) / ratio;
+
 	float xs = gl_FragCoord.x / res.x;
 	float ys = gl_FragCoord.y / res.y;
 	float xn = xs - vp.x;
 	float yn = ys - vp.y;
-	float ratio = res.y / res.x;
-
-	float border = (1. - ratio) / 2.;
 
 	float high = float(yn < 0.);
 	float left = float(xn < 0.);

@@ -235,9 +235,7 @@ static void display_pbo()
 
 	// Shader Parameters
 	shader_colorize->setUniform1i("texDecal", 0);
-	shader_colorize->setUniform2f("vp",
-			1 - ray_map.vp.x,
-			(1 - ray_map.vp.y - border) * float(screen.window_width) / float(screen.window_height));
+	shader_colorize->setUniform2f("vp", ray_map.vp.x, ray_map.vp.y);
 
 	float ofs1 = 4 * float(ray_map.res[0]) / float(RAYS_CASTED_RES);
 	float ofs2 = 4 * float(ray_map.res[1]) / float(RAYS_CASTED_RES) + ofs1;
