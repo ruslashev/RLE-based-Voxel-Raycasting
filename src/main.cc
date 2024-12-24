@@ -241,8 +241,6 @@ static void display_pbo()
 	float ofs2 = 4 * float(ray_map.res[1]) / float(RAYS_CASTED_RES) + ofs1;
 	float ofs3 = 4 * float(ray_map.res[2]) / float(RAYS_CASTED_RES) + ofs2;
 
-	shader_colorize->setUniform1f("lookdown", screen.rot.x > 0);
-
 	shader_colorize->setUniform4f("ofs_add",
 			-ray_map.p_ofs_min[0],
 			-ray_map.p_ofs_min[1] + ofs1,

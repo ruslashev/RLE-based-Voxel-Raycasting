@@ -132,6 +132,9 @@ struct Render
 			if (q >= 1)
 				quadrant_ofs -= rays[q - 1];
 
+			if (q != 0)
+				return;
+
 			float a = quadrant_ofs / ray_map.res[q];
 
 			vec3f p1 = ray_map.vp;
