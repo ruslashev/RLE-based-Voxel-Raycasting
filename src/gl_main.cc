@@ -137,13 +137,13 @@ void GL_Main::Init(int window_width, int window_height, bool fullscreen, void (*
 	glutPassiveMotionFunc(&MouseMotionStatic);
 	glutMouseFunc(&MouseButtonStatic);
 
-	get_error();
+	check_gl_err();
 }
 
 void GL_Main::deleteTexture(GLuint* tex)
 {
 	glDeleteTextures(1, tex);
-	get_error();
+	check_gl_err();
 
 	*tex = 0;
 }
@@ -166,7 +166,7 @@ void GL_Main::createTexture(GLuint* tex_name, unsigned int size_x, unsigned int 
 	else
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size_x, size_y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
-	get_error();
+	check_gl_err();
 }
 
 void GL_Main::reshape_static(int w, int h)
@@ -195,7 +195,7 @@ void GL_Main::createPBO(GLuint* pbo, int image_width, int image_height, int bpp)
 	// attach this Buffer Object to CUDA
 	cuda_pbo_register(*pbo);
 
-	get_error();
+	check_gl_err();
 }
 
 void GL_Main::deletePBO(GLuint* pbo)
@@ -203,7 +203,7 @@ void GL_Main::deletePBO(GLuint* pbo)
 	glBindBuffer(GL_ARRAY_BUFFER, *pbo);
 	glDeleteBuffers(1, pbo);
 
-	get_error();
+	check_gl_err();
 
 	*pbo = 0;
 }

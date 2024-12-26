@@ -45,17 +45,6 @@ struct GL_Main
 	// Texture functions
 	void createTexture(GLuint* tex_name, unsigned int size_x, unsigned int size_y, int bpp = 32);
 	void deleteTexture(GLuint* tex);
-
-	static void get_error()
-	{
-		GLenum err = glGetError();
-		if (err != GL_NO_ERROR) {
-			printf("GL Error: %d\n", err);
-			printf("Programm Stopped!\n");
-			while (1)
-				usleep(1000 * 1000);
-		}
-	}
 };
 
 extern GL_Main gl_main;
