@@ -151,6 +151,78 @@ static void write_ppm_image(const char *fname, const uint8_t *buf, size_t w, siz
 	outfile.close();
 }
 
+static void display_ofs_add(uint8_t *buf, size_t w, size_t h)
+{
+	float ofs_add = -ray_map.p_ofs_min[0] / 4.;
+	int ofs_add_y = ofs_add * RAYS_CASTED;
+
+	if (ofs_add_y < 0 || ofs_add_y >= RAYS_CASTED)
+		return;
+
+	for (size_t x = 0; x < 1024; ++x)
+		buf[(ofs_add_y * 1024 + x) * 4] = 0xff;
+}
+
+struct vec2 { float x, y; };
+
+static vec2 run_shader(vec2 gl_FragCoord, vec2 res, vec2 vp, float ofs_add)
+{
+	float ratio = res.y / res.x;
+	float border = (1. - ratio) / 2.;
+
+	vp.x = 1. - vp.x;
+	vp.y = 1. - vp.y;
+	vp.y = (vp.y - border) / ratio;
+
+	float xs = gl_FragCoord.x / res.x;
+	float ys = gl_FragCoord.y / res.y;
+	float xn = xs - vp.x;
+	float yn = ys - vp.y;
+
+	vec2 texpos;
+
+	texpos.x = ys * ratio + border;
+
+	texpos.y = 1. - xn / yn * abs(1. - vp.y) - vp.x;
+	texpos.y += ofs_add;
+	texpos.y /= 4.;
+
+	if ((1. - float(yn < 0.)) * (1. - float(abs(xn) * res.x > abs(yn) * res.y)) == 0.) {
+		return vec2 { 0, 0 };
+	}
+
+	return texpos;
+}
+
+static void display_sampled_points(uint8_t *buf, size_t wt, size_t ht)
+{
+	size_t ws = SCREEN_SIZE_X;
+	size_t hs = SCREEN_SIZE_Y;
+	vec2 res = { (float)ws, (float)hs };
+	vec2 vp = vec2 { ray_map.vp.x, ray_map.vp.y };
+	float ofs_add = -ray_map.p_ofs_min[0];
+
+	for (size_t y = 0; y < hs; ++y)
+		for (size_t x = 0; x < ws; ++x) {
+			vec2 frag_coord = vec2 { (float)x, (float)y };
+
+			vec2 texcoord = run_shader(frag_coord, res, vp, ofs_add);
+
+			int cx = texcoord.x * (float)wt;
+			int cy = texcoord.y * (float)ht;
+
+			if (cx < 0 || cx >= wt || cy < 0 || cy >= ht)
+				continue;
+
+			int idx = cy * wt + cx;
+
+			buf[idx * 4 + 0] = 0x33;
+			buf[idx * 4 + 1] = 0x33;
+			buf[idx * 4 + 2] = 0x33;
+			buf[idx * 4 + 3] = 0x33;
+		}
+}
+
 static void debug_print_texture(size_t size_x, size_t size_y)
 {
 	const size_t buf_size = size_x * size_y * 4;
@@ -169,6 +241,9 @@ static void debug_print_pbo(size_t size_x, size_t size_y)
 {
 	const uint8_t* raw = (uint8_t*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_READ_ONLY);
 	check_gl_err();
+
+	display_ofs_add((uint8_t*)raw, size_x, size_y);
+	display_sampled_points((uint8_t*)raw, size_x, size_y);
 
 	write_ppm_image("buffer.ppm", raw, size_x, size_y);
 
